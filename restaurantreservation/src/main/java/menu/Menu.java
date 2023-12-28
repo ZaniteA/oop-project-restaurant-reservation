@@ -1,4 +1,4 @@
-package restaurantreservation.src.menu;
+package restaurantreservation.src.main.java.menu;
 
 public abstract class Menu {
     Integer id;

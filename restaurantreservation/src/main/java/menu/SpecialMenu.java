@@ -1,4 +1,4 @@
-package restaurantreservation.src.menu;
+package restaurantreservation.src.main.java.menu;
 
 public class SpecialMenu extends Menu {
     String lore;

@@ -1,4 +1,4 @@
-package restaurantreservation.src.order;
+package restaurantreservation.src.main.java.order;
 
 public class Order {
     Integer id;
@@ -7,7 +7,7 @@ public class Order {
     Integer status;
 
     String[] statusName = new String[3];
-    statusName = {"in reserve", "in order", "finalized"};
+    //statusName = {"in reserve", "in order", "finalized"};
 
     Order(Integer id, String customerName, Integer persons, Integer status) {
         this.id = id;
@@ -23,7 +23,7 @@ public class Order {
     public void setOrderStatus(Integer newStatus) {
         status = newStatus;
     }
-
+    /*
     public void setTable(Integer newStatus) {
         ;
     }
@@ -35,4 +35,5 @@ public class Order {
     public void printBill() {
         ;
     }
+    */
 }
