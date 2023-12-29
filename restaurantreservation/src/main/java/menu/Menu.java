@@ -1,15 +1,19 @@
-package restaurantreservation.src.main.java.menu;
+package menu;
 
 public abstract class Menu {
-    Integer id;
-    String name;
-    Double price;
 
-    abstract public void print();
+    // Abstract class of a menu.
 
-    Menu(Integer id, String name, Double price) {
+    public Integer id;
+    public String name;
+    public Double price;
+
+    public Menu(Integer id, String name, Double price) {
         this.id = id;
         this.name = name;
         this.price = price;
     }
+
+    abstract public void print();
+
 }
