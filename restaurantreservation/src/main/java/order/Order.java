@@ -163,7 +163,7 @@ public class Order {
     }
 
     // Updates the status of the table.
-    public void setTable(Integer newStatus, Connection sql_connection) {
+    public void setTable(Boolean new_status, Connection sql_connection) {
         try {
             // 1st query to get the tableID from OrderTableMap
             PreparedStatement table_pst = sql_connection
@@ -177,7 +177,7 @@ public class Order {
                 // 2nd query to update the table on MsTable
                 PreparedStatement status_pst = sql_connection
                         .prepareStatement("update MsTable set Taken = ? where TableID = ?");
-                status_pst.setInt(1, newStatus);
+                status_pst.setBoolean(1, new_status);
                 status_pst.setInt(2, curTableId);
 
                 int check = status_pst.executeUpdate();
@@ -192,12 +192,12 @@ public class Order {
     }
 
     // Updates the menu of the order.
-    public void addMenu(Integer menuId, Connection sql_connection) {
-        menu_id.add(menuId);
+    public void addMenu(Integer new_menu_id, Connection sql_connection) {
+        menu_id.add(new_menu_id);
         try {
             PreparedStatement status_pst = sql_connection
                     .prepareStatement("insert into OrderMenuMap values (?, ?)");
-            status_pst.setInt(1, menuId);
+            status_pst.setInt(1, new_menu_id);
             status_pst.setInt(2, id);
 
             int check = status_pst.executeUpdate();
@@ -210,75 +210,79 @@ public class Order {
         }
     }
 
-
+    // Prints the bill of the order.
     public void printBill(Connection sql_connection) {
-        Double totalPrice = 0.0;
-        ArrayList<String> listMenuName = new ArrayList<String>();
-        ArrayList<Double> listPrice = new ArrayList<Double>();
+        Double total_price = 0.0;
+        ArrayList<String> menu_name_list = new ArrayList<String>();
+        ArrayList<Double> price_list = new ArrayList<Double>();
 
-        // sort the menu_id to make it easier
+        // Sort the menu_id to make it easier
         Collections.sort(menu_id);
 
         for (int i = 0; i < menu_id.size(); i++) {
             Integer t = menu_id.get(i);
 
-            // this menu_id has been computed before so we can simply continue to avoid double counting
+            // This menu_id has been computed before so we can simply continue to avoid double counting
             if (i > 0 && t == menu_id.get(i - 1)) {
+                menu_name_list.add(menu_name_list.get(i - 1));
+                price_list.add(price_list.get(i - 1));
                 continue;
             }
             
             try {
-                // get curMenuID from the first query
+                // Get cur_menu_id from the first query
                 PreparedStatement table_pst = sql_connection
                         .prepareStatement("select * from OrderMenuTransaction where MenuID = ? AND OrderID = ?");
                 table_pst.setInt(1, t);
                 table_pst.setInt(2, id);
                 ResultSet table_rs = table_pst.executeQuery();
 
-                String menuName;
-                Double menuPrice;
+                String menu_name = "";
+                Double menu_price = 0.0;
                 while (table_rs.next()) {
-                    Integer curMenuId = table_rs.getInt("MenuID");
+                    Integer cur_menu_id = table_rs.getInt("MenuID");
 
-                    // get curRegularId, curSpecialId, and curLocalId from the second query
+                    // Get cur_regular_id, cur_special_id, and cur_local_id from the second query
                     PreparedStatement table_pst_2 = sql_connection
                         .prepareStatement("select * from MsMenu where menuID = ?");
-                    table_pst_2.setInt(1, curMenuId);
+                    table_pst_2.setInt(1, cur_menu_id);
                     ResultSet table_rs_2 = table_pst_2.executeQuery();
 
-                    Integer curRegularId = table_rs_2.getInt("RegularID");
-                    Integer curSpecialId = table_rs_2.getInt("SpecialID");
-                    Integer curLocalId = table_rs_2.getInt("LocalID");
+                    Integer cur_regular_id = table_rs_2.getInt("RegularID");
+                    Integer cur_special_id = table_rs_2.getInt("SpecialID");
+                    Integer cur_local_id = table_rs_2.getInt("LocalID");
 
-                    // get menuName and menuPrice for the third query
+                    // Get menuName and menuPrice from the third query
                     while (table_rs_2.next()) {
-                        if (curRegularId != null) {
-                            PreparedStatement table_pst_3 = sql_connection
+                        PreparedStatement table_pst_3 = null;
+
+                        if (cur_regular_id != 0) {
+                            table_pst_3 = sql_connection
                                 .prepareStatement("select * from MsRegularMenu where RegularID = ?");
-                            table_pst_2.setInt(1, curRegularId);
-                            ResultSet table_rs_3 = table_pst_3.executeQuery();
-                            menuName = table_rs_3.getString("Name");
-                            menuPrice = table_rs_3.getDouble("Price");
-                        } else if (curSpecialId != null) {
-                            PreparedStatement table_pst_3 = sql_connection
+                            table_pst_3.setInt(1, cur_regular_id);
+
+                        } else if (cur_special_id != 0) {
+                            table_pst_3 = sql_connection
                                 .prepareStatement("select * from MsRegularMenu where SpecialID = ?");
-                            table_pst_2.setInt(1, curSpecialId);
-                            ResultSet table_rs_3 = table_pst_3.executeQuery();
-                            menuName = table_rs_3.getString("Name");
-                            menuPrice = table_rs_3.getDouble("Price");
-                        } else if (curLocalId != null) {
-                            PreparedStatement table_pst_3 = sql_connection
+                            table_pst_3.setInt(1, cur_special_id);
+
+                        } else if (cur_local_id != 0) {
+                            table_pst_3 = sql_connection
                                 .prepareStatement("select * from MsRegularMenu where LocalID = ?");
-                            table_pst_2.setInt(1, curLocalId);
-                            ResultSet table_rs_3 = table_pst_3.executeQuery();
-                            menuName = table_rs_3.getString("Name");
-                            menuPrice = table_rs_3.getDouble("Price");
+                            table_pst_3.setInt(1, cur_local_id);
+
                         } else {
                             throw new Exception("Something went wrong on getting list menu");
                         }
 
-                        listMenuName.add(menuName);
-                        listPrice.add(menuPrice);
+                        ResultSet table_rs_3 = table_pst_3.executeQuery();
+                        while (table_rs_3.next()) {
+                            menu_name = table_rs_3.getString("Name");
+                            menu_price = table_rs_3.getDouble("Price");
+                        }
+
+                        menu_name_list.add(menu_name);
+                        price_list.add(menu_price);
                     }
                 }
 
@@ -287,11 +291,11 @@ public class Order {
             }
         }
 
-        for (int i = 0; i < listMenuName.size(); i++) {
-            System.out.printf("%s Rp %lf\n", listMenuName.get(i), listPrice.get(i));
-            totalPrice += listPrice.get(i);
+        // Print the lists and total price
+        for (int i = 0; i < menu_name_list.size(); i++) {
+            System.out.printf("%s: Rp %.0lf\n", menu_name_list.get(i), price_list.get(i));
+            total_price += price_list.get(i);
         }
-
-        System.out.printf("Total Price: Rp %lf\n", totalPrice);
+        System.out.printf("Total Price: Rp %.0lf\n", total_price);
     }
 }
