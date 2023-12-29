@@ -1,17 +1,17 @@
-package restaurantreservation.src.main.java.main;
+package main;
 
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
 	
-	int sect;
-	Scanner userInput = new Scanner(System.in);
-	Employee emp = EmployeeAccount.getInstance();
+	static int sect;
+	static Scanner userInput = new Scanner(System.in);
+	static Employee emp = EmployeeAccount.getInstance();
 	
 	// Section 1
-	public void homeMenu() {
-		System.out.println("Hello " + emp.name, + ", what would you like to do?");
+	public static void homeMenu() {
+		System.out.println("Hello " , emp.name, , ", what would you like to do?");
 		System.out.println("1.  View Order");
 		System.out.println("2.  Add Reservasion");
 		System.out.println("3.  Add Menu to an Order");
@@ -37,8 +37,8 @@ public class Main {
 	}
 	
 	// Section 2
-	public void login() {
-		System.out.println("Enter Employee ID:");
+	public static void login() {
+		System.out.println("Enter employee ID:");
 		System.out.print("> ");
 		
 		int empId = userInput.nextInt();
@@ -52,7 +52,7 @@ public class Main {
 	}
 	
 	// Section 3
-	public void viewOrder() {
+	public static void viewOrder() {
 		emp.viewOrder();
 		
 		sect = 1;
@@ -61,9 +61,9 @@ public class Main {
 	}
 	
 	// Section 4
-	public void addReservation() {
+	public static void addReservation() {
 		// Get Customer Name
-		System.out.println("Enter Customer Name:");
+		System.out.println("Enter customer name:");
 		System.out.print("> ");
 		String name = userInput.nextLine();
 		
@@ -71,33 +71,33 @@ public class Main {
 		int number_of_table;
 		ArrayList<Integer> table_id;
 		
-		System.out.println("How Many Table?");
+		System.out.println("How many table?");
 		System.out.print("> ");
 		number_of_table = userInput.nextInt();
 		userInput.nextLine();
 		
 		while(number_of_table <= 0) { // Invalid number of table 
-			System.out.println("Invalid Input, Please Enter the Correct Number of Table");
+			System.out.println("Invalid input, please enter the correct number of table");
 			number_of_table = userInput.nextInt();
 			userInput.nextLine();
 		}
 		
 		int tmp;
 		for(int i = 0; i < number_of_table; i++) {
-			System.out.print("Enter " + i + "-th Table ID: ");
+			System.out.print("Enter " + i + "-th table ID: ");
 			tmp = userInput.nextInt();
 			userInput.nextLine();
 			table_id.add(tmp);
 		}
 		
 		// Get number of person
-		System.out.println("How Many Customers For This Reservation?");
+		System.out.println("How many customers for this reservation?");
 		System.out.print("> ");
 		int number_of_person = userInput.nextInt();
 		userInput.nextLine();
 		
 		while(number_of_person <= 0) { // Invalid number of table 
-			System.out.println("Invalid Input, Please Enter the Correct Number of Person");
+			System.out.println("Invalid input, please enter the correct number of person");
 			number_of_person = userInput.nextInt();
 			userInput.nextLine();
 		}
@@ -110,9 +110,9 @@ public class Main {
 	}
 	
 	// Section 5
-	public void addOrder() {
+	public static void addOrder() {
 		// Get Order ID
-		System.out.println("Enter Order ID:");
+		System.out.println("Enter order ID:");
 		System.out.print("> ");
 		int order_id = userInput.nextInt();
 		userInput.nextLine();
@@ -121,20 +121,20 @@ public class Main {
 		int number_of_menu;
 		ArrayList<Integer> menu_id;
 		
-		System.out.println("How Many Menu?");
+		System.out.println("How many menu?");
 		System.out.print("> ");
 		number_of_menu = userInput.nextInt();
 		userInput.nextLine();
 		
 		while(number_of_menu <= 0) { // Invalid number of table 
-			System.out.println("Invalid Input, Please Enter the Correct Number of Menu");
+			System.out.println("Invalid input, please enter the correct number of menu");
 			number_of_menu = userInput.nextInt();
 			userInput.nextLine();
 		}
 		
 		int tmp;
 		for(int i = 0; i < number_of_menu; i++) {
-			System.out.print("Enter " + i + "-th Menu ID: ");
+			System.out.print("Enter " + i + "-th menu ID: ");
 			tmp = userInput.nextInt();
 			userInput.nextLine();
 			menu_id.add(tmp);
@@ -148,9 +148,9 @@ public class Main {
 	}
 	
 	// Section 6
-	public void finalizeOrder() {
+	public static void finalizeOrder() {
 		// Get Order ID
-		System.out.println("Enter Order ID:");
+		System.out.println("Enter order ID:");
 		System.out.print("> ");
 		int order_id = userInput.nextInt();
 		userInput.nextLine();
@@ -163,7 +163,7 @@ public class Main {
 	}
 	
 	// Section 7
-	public void viewMenu() {
+	public static void viewMenu() {
 		emp.viewMenu();
 		
 		sect = 1;
@@ -172,8 +172,8 @@ public class Main {
 	}
 	
 	// Section 8
-	public void insertMenu() {
-		System.out.println("Which Type of Menu Do You Want to Insert?");
+	public static void insertMenu() {
+		System.out.println("Which type of menu do you want to insert?");
 		System.out.println("1. Reguler");
 		System.out.println("2. Special");
 		System.out.println("3. Local Special");
@@ -183,8 +183,8 @@ public class Main {
 		userInput.nextLine();
 		
 		while(type <= 0 || type > 3) {
-			System.out.println("Incorrect Type! Try Again!!");
-			System.out.println("Which Type of Menu Do You Want to Insert?");
+			System.out.println("Incorrect type! Try again!!");
+			System.out.println("Which type of menu do you want to insert?");
 			System.out.println("1. Reguler");
 			System.out.println("2. Special");
 			System.out.println("3. Local Special");
@@ -196,51 +196,51 @@ public class Main {
 		
 		if(type == 1) {
 			// Get Name
-			System.out.println("Enter Menu Name:");
+			System.out.println("Enter menu name:");
 			System.out.print("> ");
 			String name = userInput.nextLine();
 			
 			// Get Price
-			System.out.println("Enter Menu Price:")
+			System.out.println("Enter menu price:");
 			System.out.print("> ");
 			double price = userInput.nextDouble();
 			
 			emp.insertMenu(name, price);
 		} else if(type == 2) {
 			// Get Name
-			System.out.println("Enter Menu Name:");
+			System.out.println("Enter menu name:");
 			System.out.print("> ");
 			String name = userInput.nextLine();
 			
 			// Get Price
-			System.out.println("Enter Menu Price:")
+			System.out.println("Enter menu price:");
 			System.out.print("> ");
 			double price = userInput.nextDouble();
 			
 			// Get Naration
-			System.out.println("Enter Naration for This Menu:")
+			System.out.println("Enter a naration for this menu:")
 			System.out.print("> ");
 			String lore = userInput.nextLine();
 			
 			emp.insertMenu(name, price, lore);
 		} else {
 			// Get Name
-			System.out.println("Enter Menu Name:");
+			System.out.println("Enter menu name:");
 			System.out.print("> ");
 			String name = userInput.nextLine();
 			
 			// Get Price
-			System.out.println("Enter Menu Price:")
+			System.out.println("Enter menu price:");
 			System.out.print("> ");
 			double price = userInput.nextDouble();
 			
 			// Get Naration
-			System.out.println("Enter Naration for This Menu:")
+			System.out.println("Enter a naration for this menu:");
 			System.out.print("> ");
 			String lore = userInput.nextLine();
 			
 			// Get Location
-			System.out.println("Enter Menu's Origin Location:");
+			System.out.println("Enter menu's origin location:");
 			System.out.print("> ");
 			String location = userInput.nextLine();
 			
@@ -253,14 +253,14 @@ public class Main {
 	}
 	
 	// Section 9
-	public void updateMenu() {
+	public static void updateMenu() {
 		// Get Menu ID
-		System.out.println("Enter Menu ID:")
+		System.out.println("Enter menu ID:");
 		System.out.print("> ");
 		int menu_id = userInput.nextInt();
 		userInput.nextLine();
 		
-		System.out.println("Which One Would You Like to Update?");
+		System.out.println("Which one would you like to update?");
 		System.out.println("1. Name");
 		System.out.println("2. Price");
 		System.out.print("> ");
@@ -270,8 +270,8 @@ public class Main {
 		
 		while(type <= 0 || type > 2) {
 			System.out.println();
-			System.out.println("Invalid Input! Please Try Again!!");
-			System.out.println("Which One Would You Like to Update?");
+			System.out.println("Invalid input! please try again!!");
+			System.out.println("Which one would you like to update?");
 			System.out.println("1. Name");
 			System.out.println("2. Price");
 			System.out.print("> ");
@@ -280,13 +280,13 @@ public class Main {
 		}
 		
 		if(type == 1) {
-			System.out.println("Enter New Menu Name:");
+			System.out.println("Enter new menu name:");
 			System.out.print("> ");
 			String new_name = userInput.nextLine();
 			
 			emp.updateMenu(menu_id, new_name);
 		} else {
-			System.out.println("Enter New Menu Price:");
+			System.out.println("Enter new menu price:");
 			System.out.print("> ");
 			double new_price = userInput.nextDouble();
 			
@@ -299,9 +299,9 @@ public class Main {
 	}
 	
 	// Section 10
-	public void deleteMenu() {
+	public static void deleteMenu() {
 		// Get Menu ID
-		System.out.println("Enter Menu ID:")
+		System.out.println("Enter menu ID:");
 		System.out.print("> ");
 		int menu_id = userInput.nextInt();
 		userInput.nextLine();
@@ -313,7 +313,7 @@ public class Main {
 	}
 	
 	// Section 11
-	public void viewTable() {
+	public static void viewTable() {
 		emp.viewTable();
 		
 		sect = 1;
@@ -322,8 +322,8 @@ public class Main {
 	}
 	
 	// Section 12
-	public void logout() {
-		System.out.println("See you again, " + emp.name + "!");
+	public static void logout() {
+		System.out.println("See you again, " , emp.name , "!");
 		
 		emp.logout();
 		sect = 2;
@@ -333,7 +333,7 @@ public class Main {
 	
     public static void main(String[] args) {
         sect = 2;
-        while() {
+        while(true) {
         	System.out.println();
         	System.out.println();
         	if(sect == 2) {
@@ -363,7 +363,7 @@ public class Main {
         	} else if(sect == 0) {
         		break;
         	} else {
-        		System.out.println("Invalid Section, Please Try Again");
+        		System.out.println("Invalid section, please try again");
         		
         		if(emp.checkLoggedIn()) {
         			sect = 1;
