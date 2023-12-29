@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Dec 29, 2023 at 09:53 AM
+-- Generation Time: Dec 29, 2023 at 01:34 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -352,10 +352,11 @@ INSERT INTO `MsTable` (`TableID`, `Capacity`, `Taken`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `OrderMenuMap`
+-- Table structure for table `OrderMenuTransaction`
 --
 
-CREATE TABLE `OrderMenuMap` (
+CREATE TABLE `OrderMenuTransaction` (
+  `TransactionID` int(11) NOT NULL,
   `MenuID` int(11) NOT NULL,
   `OrderID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -506,11 +507,12 @@ ALTER TABLE `MsTable`
   ADD PRIMARY KEY (`TableID`);
 
 --
--- Indexes for table `OrderMenuMap`
+-- Indexes for table `OrderMenuTransaction`
 --
-ALTER TABLE `OrderMenuMap`
-  ADD PRIMARY KEY (`MenuID`,`OrderID`),
-  ADD KEY `ConnectorOrderMenuMap-MsOrder` (`OrderID`);
+ALTER TABLE `OrderMenuTransaction`
+  ADD PRIMARY KEY (`TransactionID`),
+  ADD KEY `ConnectorOrderMenuTransaction-MsMenu` (`MenuID`),
+  ADD KEY `ConnectorOrderMenuTransaction-MsOrder` (`OrderID`);
 
 --
 -- Indexes for table `OrderTableMap`
@@ -523,7 +525,7 @@ ALTER TABLE `OrderTableMap`
 -- Indexes for table `RestaurantOrderMap`
 --
 ALTER TABLE `RestaurantOrderMap`
-  ADD PRIMARY KEY (`RestaurantID`,`OrderID`),
+  ADD PRIMARY KEY (`RestaurantID`,`OrderID`) USING BTREE,
   ADD KEY `ConnectorRestaurantOrderMap-MsOrder` (`OrderID`);
 
 --
@@ -598,6 +600,12 @@ ALTER TABLE `MsTable`
   MODIFY `TableID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
 
 --
+-- AUTO_INCREMENT for table `OrderMenuTransaction`
+--
+ALTER TABLE `OrderMenuTransaction`
+  MODIFY `TransactionID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- Constraints for dumped tables
 --
 
@@ -623,11 +631,11 @@ ALTER TABLE `MsRestaurant`
   ADD CONSTRAINT `ConnectorMsRestaurant-MsMainRestaurant` FOREIGN KEY (`MainID`) REFERENCES `MsMainRestaurant` (`MainID`);
 
 --
--- Constraints for table `OrderMenuMap`
+-- Constraints for table `OrderMenuTransaction`
 --
-ALTER TABLE `OrderMenuMap`
-  ADD CONSTRAINT `ConnectorOrderMenuMap-MsMenu` FOREIGN KEY (`MenuID`) REFERENCES `MsMenu` (`MenuID`),
-  ADD CONSTRAINT `ConnectorOrderMenuMap-MsOrder` FOREIGN KEY (`OrderID`) REFERENCES `MsOrder` (`OrderID`);
+ALTER TABLE `OrderMenuTransaction`
+  ADD CONSTRAINT `ConnectorOrderMenuTransaction-MsMenu` FOREIGN KEY (`MenuID`) REFERENCES `MsMenu` (`MenuID`),
+  ADD CONSTRAINT `ConnectorOrderMenuTransaction-MsOrder` FOREIGN KEY (`OrderID`) REFERENCES `MsOrder` (`OrderID`);
 
 --
 -- Constraints for table `OrderTableMap`
