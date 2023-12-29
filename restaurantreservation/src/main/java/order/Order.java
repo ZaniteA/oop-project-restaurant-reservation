@@ -222,13 +222,14 @@ public class Order {
         for (int i = 0; i < menu_id.size(); i++) {
             Integer t = menu_id.get(i);
 
-            // This menu_id has been computed before so we can simply continue to avoid double counting
+            // This menu_id has been computed before so we can simply continue to avoid
+            // double counting
             if (i > 0 && t == menu_id.get(i - 1)) {
                 menu_name_list.add(menu_name_list.get(i - 1));
                 price_list.add(price_list.get(i - 1));
                 continue;
             }
-            
+
             try {
                 // Get cur_menu_id from the first query
                 PreparedStatement table_pst = sql_connection
@@ -244,7 +245,7 @@ public class Order {
 
                     // Get cur_regular_id, cur_special_id, and cur_local_id from the second query
                     PreparedStatement table_pst_2 = sql_connection
-                        .prepareStatement("select * from MsMenu where menuID = ?");
+                            .prepareStatement("select * from MsMenu where menuID = ?");
                     table_pst_2.setInt(1, cur_menu_id);
                     ResultSet table_rs_2 = table_pst_2.executeQuery();
 
@@ -258,17 +259,17 @@ public class Order {
 
                         if (cur_regular_id != 0) {
                             table_pst_3 = sql_connection
-                                .prepareStatement("select * from MsRegularMenu where RegularID = ?");
+                                    .prepareStatement("select * from MsRegularMenu where RegularID = ?");
                             table_pst_3.setInt(1, cur_regular_id);
 
                         } else if (cur_special_id != 0) {
                             table_pst_3 = sql_connection
-                                .prepareStatement("select * from MsRegularMenu where SpecialID = ?");
+                                    .prepareStatement("select * from MsRegularMenu where SpecialID = ?");
                             table_pst_3.setInt(1, cur_special_id);
 
                         } else if (cur_local_id != 0) {
                             table_pst_3 = sql_connection
-                                .prepareStatement("select * from MsRegularMenu where LocalID = ?");
+                                    .prepareStatement("select * from MsRegularMenu where LocalID = ?");
                             table_pst_3.setInt(1, cur_local_id);
 
                         } else {
