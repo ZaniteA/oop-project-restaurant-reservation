@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Order {
 
@@ -95,8 +96,8 @@ public class Order {
     // Verifies if the tables selected for the order is valid and enough for the
     // number of persons.
     public Boolean verifyTables(Connection sql_connection) {
-        int total_cap = 0;
-        for (int t : table_id) {
+        Integer total_cap = 0;
+        for (Integer t : table_id) {
             try {
                 PreparedStatement table_pst = sql_connection
                         .prepareStatement("select * from MsTable where TableID = ?");
@@ -161,18 +162,136 @@ public class Order {
         }
     }
 
-    /*
-     * public void setTable(Integer newStatus) {
-     * ;
-     * }
-     * 
-     * public void addMenu(Integer menuId) {
-     * ;
-     * }
-     * 
-     * public void printBill() {
-     * ;
-     * }
-     */
+    // Updates the status of the table.
+    public void setTable(Integer newStatus, Connection sql_connection) {
+        try {
+            // 1st query to get the tableID from OrderTableMap
+            PreparedStatement table_pst = sql_connection
+                    .prepareStatement("select * from OrderTableMap where OrderID = ?");
+            table_pst.setInt(1, id);
+            ResultSet table_rs = table_pst.executeQuery();
 
+            while (table_rs.next()) {
+                Integer curTableId = table_rs.getInt("TableID");
+
+                // 2nd query to update the table on MsTable
+                PreparedStatement status_pst = sql_connection
+                        .prepareStatement("update MsTable set Taken = ? where TableID = ?");
+                status_pst.setInt(1, newStatus);
+                status_pst.setInt(2, curTableId);
+
+                int check = status_pst.executeUpdate();
+                if (check == 0) {
+                    throw new Exception("Update failed");
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Updates the menu of the order.
+    public void addMenu(Integer menuId, Connection sql_connection) {
+        menu_id.add(menuId);
+        try {
+            PreparedStatement status_pst = sql_connection
+                    .prepareStatement("insert into OrderMenuMap values (?, ?)");
+            status_pst.setInt(1, menuId);
+            status_pst.setInt(2, id);
+
+            int check = status_pst.executeUpdate();
+            if (check == 0) {
+                throw new Exception("Insert failed");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void printBill(Connection sql_connection) {
+        Double totalPrice = 0.0;
+        ArrayList<String> listMenuName = new ArrayList<String>();
+        ArrayList<Double> listPrice = new ArrayList<Double>();
+
+        // sort the menu_id to make it easier
+        Collections.sort(menu_id);
+
+        for (int i = 0; i < menu_id.size(); i++) {
+            Integer t = menu_id.get(i);
+
+            // this menu_id has been computed before so we can simply continue to avoid double counting
+            if (i > 0 && t == menu_id.get(i - 1)) {
+                continue;
+            }
+            
+            try {
+                // get curMenuID from the first query
+                PreparedStatement table_pst = sql_connection
+                        .prepareStatement("select * from OrderMenuTransaction where MenuID = ? AND OrderID = ?");
+                table_pst.setInt(1, t);
+                table_pst.setInt(2, id);
+                ResultSet table_rs = table_pst.executeQuery();
+
+                String menuName;
+                Double menuPrice;
+                while (table_rs.next()) {
+                    Integer curMenuId = table_rs.getInt("MenuID");
+
+                    // get curRegularId, curSpecialId, and curLocalId from the second query
+                    PreparedStatement table_pst_2 = sql_connection
+                        .prepareStatement("select * from MsMenu where menuID = ?");
+                    table_pst_2.setInt(1, curMenuId);
+                    ResultSet table_rs_2 = table_pst_2.executeQuery();
+
+                    Integer curRegularId = table_rs_2.getInt("RegularID");
+                    Integer curSpecialId = table_rs_2.getInt("SpecialID");
+                    Integer curLocalId = table_rs_2.getInt("LocalID");
+
+                    // get menuName and menuPrice for the third query
+                    while (table_rs_2.next()) {
+                        if (curRegularId != null) {
+                            PreparedStatement table_pst_3 = sql_connection
+                                .prepareStatement("select * from MsRegularMenu where RegularID = ?");
+                            table_pst_2.setInt(1, curRegularId);
+                            ResultSet table_rs_3 = table_pst_3.executeQuery();
+                            menuName = table_rs_3.getString("Name");
+                            menuPrice = table_rs_3.getDouble("Price");
+                        } else if (curSpecialId != null) {
+                            PreparedStatement table_pst_3 = sql_connection
+                                .prepareStatement("select * from MsRegularMenu where SpecialID = ?");
+                            table_pst_2.setInt(1, curSpecialId);
+                            ResultSet table_rs_3 = table_pst_3.executeQuery();
+                            menuName = table_rs_3.getString("Name");
+                            menuPrice = table_rs_3.getDouble("Price");
+                        } else if (curLocalId != null) {
+                            PreparedStatement table_pst_3 = sql_connection
+                                .prepareStatement("select * from MsRegularMenu where LocalID = ?");
+                            table_pst_2.setInt(1, curLocalId);
+                            ResultSet table_rs_3 = table_pst_3.executeQuery();
+                            menuName = table_rs_3.getString("Name");
+                            menuPrice = table_rs_3.getDouble("Price");
+                        } else {
+                            throw new Exception("Something went wrong on getting list menu");
+                        }
+
+                        listMenuName.add(menuName);
+                        listPrice.add(menuPrice);
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        for (int i = 0; i < listMenuName.size(); i++) {
+            System.out.printf("%s Rp %lf\n", listMenuName.get(i), listPrice.get(i));
+            totalPrice += listPrice.get(i);
+        }
+
+        System.out.printf("Total Price: Rp %lf\n", totalPrice);
+    }
 }
