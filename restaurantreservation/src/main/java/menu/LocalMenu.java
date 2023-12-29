@@ -8,8 +8,8 @@ public class LocalMenu extends Menu {
 
     // A local menu, which is only present in local restaurants.
 
-    String lore;
-    String location;
+    public String lore;
+    public String location;
     public Integer local_id;
 
     // Constructor to create a new local menu.

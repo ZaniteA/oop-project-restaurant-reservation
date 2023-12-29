@@ -8,7 +8,7 @@ public class SpecialMenu extends Menu {
 
     // A special menu, which is only present in main restaurants.
 
-    String lore;
+    public String lore;
     public Integer special_id;
 
     // Constructor to create a new special menu.
