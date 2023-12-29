@@ -23,7 +23,7 @@ public class RegularMenu extends Menu {
     }
 
     // Method to create a regular menu based on the database.
-    // If the ID does not exist in the database, all fields are filled with NULL.
+    // If the ID does not exist in the database, returns NULL.
     public static RegularMenu createFromID(Integer id, Connection sql_connection) {
         try {
             PreparedStatement menu_pst = sql_connection.prepareStatement("select * from MsMenu where MenuID = ?");
@@ -57,7 +57,7 @@ public class RegularMenu extends Menu {
         }
 
         // If the ID is invalid, or an exception happened
-        return new RegularMenu(null, null);
+        return null;
     }
 
     // Prints the menu for viewing.
