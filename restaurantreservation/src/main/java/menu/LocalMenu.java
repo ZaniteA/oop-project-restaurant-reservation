@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 public class LocalMenu extends Menu {
 
     // A local menu, which is only present in local restaurants.
-    
+
     String lore;
     String location;
     public Integer local_id;
@@ -44,8 +44,9 @@ public class LocalMenu extends Menu {
 
             while (menu_rs.next()) {
                 local_id = menu_rs.getInt("LocalID");
-                
-                PreparedStatement reg_pst = sql_connection.prepareStatement("select * from MsSpecialMenu where LocalID = ?");
+
+                PreparedStatement reg_pst = sql_connection
+                        .prepareStatement("select * from MsSpecialMenu where LocalID = ?");
                 reg_pst.setInt(1, local_id);
                 ResultSet reg_rs = reg_pst.executeQuery();
 
@@ -77,4 +78,5 @@ public class LocalMenu extends Menu {
         System.out.printf("Narration: %s\n", this.lore);
         System.out.printf("Origin   : %s\n", this.location);
     }
+
 }

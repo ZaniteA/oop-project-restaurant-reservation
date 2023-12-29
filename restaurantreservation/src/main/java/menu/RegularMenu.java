@@ -36,8 +36,9 @@ public class RegularMenu extends Menu {
 
             while (menu_rs.next()) {
                 regular_id = menu_rs.getInt("RegularID");
-                
-                PreparedStatement reg_pst = sql_connection.prepareStatement("select * from MsRegularMenu where RegularID = ?");
+
+                PreparedStatement reg_pst = sql_connection
+                        .prepareStatement("select * from MsRegularMenu where RegularID = ?");
                 reg_pst.setInt(1, regular_id);
                 ResultSet reg_rs = reg_pst.executeQuery();
 

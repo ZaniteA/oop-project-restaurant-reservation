@@ -40,8 +40,9 @@ public class SpecialMenu extends Menu {
 
             while (menu_rs.next()) {
                 special_id = menu_rs.getInt("SpecialID");
-                
-                PreparedStatement reg_pst = sql_connection.prepareStatement("select * from MsSpecialMenu where SpecialID = ?");
+
+                PreparedStatement reg_pst = sql_connection
+                        .prepareStatement("select * from MsSpecialMenu where SpecialID = ?");
                 reg_pst.setInt(1, special_id);
                 ResultSet reg_rs = reg_pst.executeQuery();
 
