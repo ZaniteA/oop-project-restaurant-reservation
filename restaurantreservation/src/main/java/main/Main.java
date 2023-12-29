@@ -1,379 +1,380 @@
-package restaurantreservation.src.main.java.main;
+package main;
 
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Main {
-	
-	int sect;
-	Scanner userInput = new Scanner(System.in);
-	Employee emp = EmployeeAccount.getInstance();
-	
-	// Section 1
-	public void homeMenu() {
-		System.out.println("Hello " + emp.name, + ", what would you like to do?");
-		System.out.println("1.  View Order");
-		System.out.println("2.  Add Reservasion");
-		System.out.println("3.  Add Menu to an Order");
-		System.out.println("4.  Finalize Order");
-		System.out.println("5.  View Menu");
-		System.out.println("6.  Insert Menu");
-		System.out.println("7.  Update Menu");
-		System.out.println("8.  Delete Menu");
-		System.out.println("9.  Logout");
-		System.out.println("10. View Table");
-		System.out.println("0. Exit");
-		System.out.print("> ");
-		
-		sect = userInput.nextInt();
-		userInput.nextLine();
-		
-		// Add 2 to section since section 1 and 2 is reserved for home menu and login, except for exit
-		if(sect > 0) {
-			sect += 2;
-		}
-		
-		return;
-	}
-	
-	// Section 2
-	public void login() {
-		System.out.println("Enter Employee ID:");
-		System.out.print("> ");
-		
-		int empId = userInput.nextInt();
-		userInput.nextLine();
-		
-		emp.login(empId);
-		
-		sect = 1;
-		
-		return;
-	}
-	
-	// Section 3
-	public void viewOrder() {
-		emp.viewOrder();
-		
-		sect = 1;
-		
-		return;
-	}
-	
-	// Section 4
-	public void addReservation() {
-		// Get Customer Name
-		System.out.println("Enter Customer Name:");
-		System.out.print("> ");
-		String name = userInput.nextLine();
-		
-		// Get Table List
-		int number_of_table;
-		ArrayList<Integer> table_id;
-		
-		System.out.println("How Many Table?");
-		System.out.print("> ");
-		number_of_table = userInput.nextInt();
-		userInput.nextLine();
-		
-		while(number_of_table <= 0) { // Invalid number of table 
-			System.out.println("Invalid Input, Please Enter the Correct Number of Table");
-			number_of_table = userInput.nextInt();
-			userInput.nextLine();
-		}
-		
-		int tmp;
-		for(int i = 0; i < number_of_table; i++) {
-			System.out.print("Enter " + i + "-th Table ID: ");
-			tmp = userInput.nextInt();
-			userInput.nextLine();
-			table_id.add(tmp);
-		}
-		
-		// Get number of person
-		System.out.println("How Many Customers For This Reservation?");
-		System.out.print("> ");
-		int number_of_person = userInput.nextInt();
-		userInput.nextLine();
-		
-		while(number_of_person <= 0) { // Invalid number of table 
-			System.out.println("Invalid Input, Please Enter the Correct Number of Person");
-			number_of_person = userInput.nextInt();
-			userInput.nextLine();
-		}
-		
-		emp.addOrderInReseve(name, table_id, number_of_person);
-		
-		sect = 1;
-		
-		return;
-	}
-	
-	// Section 5
-	public void addOrder() {
-		// Get Order ID
-		System.out.println("Enter Order ID:");
-		System.out.print("> ");
-		int order_id = userInput.nextInt();
-		userInput.nextLine();
-		
-		// Get Menu List
-		int number_of_menu;
-		ArrayList<Integer> menu_id;
-		
-		System.out.println("How Many Menu?");
-		System.out.print("> ");
-		number_of_menu = userInput.nextInt();
-		userInput.nextLine();
-		
-		while(number_of_menu <= 0) { // Invalid number of table 
-			System.out.println("Invalid Input, Please Enter the Correct Number of Menu");
-			number_of_menu = userInput.nextInt();
-			userInput.nextLine();
-		}
-		
-		int tmp;
-		for(int i = 0; i < number_of_menu; i++) {
-			System.out.print("Enter " + i + "-th Menu ID: ");
-			tmp = userInput.nextInt();
-			userInput.nextLine();
-			menu_id.add(tmp);
-		}
-		
-		emp.addMenuToOrder(order_id, menu_id);
+import employee_account.EmployeeAccount;
 
-		sect = 1;
-			
-		return;
-	}
-	
-	// Section 6
-	public void finalizeOrder() {
-		// Get Order ID
-		System.out.println("Enter Order ID:");
-		System.out.print("> ");
-		int order_id = userInput.nextInt();
-		userInput.nextLine();
-		
-		emp.finalizeOrder(order_id);
-		
-		sect = 1;
-		
-		return;
-	}
-	
-	// Section 7
-	public void viewMenu() {
-		emp.viewMenu();
-		
-		sect = 1;
-		
-		return;
-	}
-	
-	// Section 8
-	public void insertMenu() {
-		System.out.println("Which Type of Menu Do You Want to Insert?");
-		System.out.println("1. Reguler");
-		System.out.println("2. Special");
-		System.out.println("3. Local Special");
-		System.out.print("> ");
-		
-		int type = userInput.nextInt();
-		userInput.nextLine();
-		
-		while(type <= 0 || type > 3) {
-			System.out.println("Incorrect Type! Try Again!!");
-			System.out.println("Which Type of Menu Do You Want to Insert?");
-			System.out.println("1. Reguler");
-			System.out.println("2. Special");
-			System.out.println("3. Local Special");
-			
-			type = userInput.nextInt();
-			userInput.nextLine();
-		}
-		
-		
-		if(type == 1) {
-			// Get Name
-			System.out.println("Enter Menu Name:");
-			System.out.print("> ");
-			String name = userInput.nextLine();
-			
-			// Get Price
-			System.out.println("Enter Menu Price:")
-			System.out.print("> ");
-			double price = userInput.nextDouble();
-			
-			emp.insertMenu(name, price);
-		} else if(type == 2) {
-			// Get Name
-			System.out.println("Enter Menu Name:");
-			System.out.print("> ");
-			String name = userInput.nextLine();
-			
-			// Get Price
-			System.out.println("Enter Menu Price:")
-			System.out.print("> ");
-			double price = userInput.nextDouble();
-			
-			// Get Naration
-			System.out.println("Enter Naration for This Menu:")
-			System.out.print("> ");
-			String lore = userInput.nextLine();
-			
-			emp.insertMenu(name, price, lore);
-		} else {
-			// Get Name
-			System.out.println("Enter Menu Name:");
-			System.out.print("> ");
-			String name = userInput.nextLine();
-			
-			// Get Price
-			System.out.println("Enter Menu Price:")
-			System.out.print("> ");
-			double price = userInput.nextDouble();
-			
-			// Get Naration
-			System.out.println("Enter Naration for This Menu:")
-			System.out.print("> ");
-			String lore = userInput.nextLine();
-			
-			// Get Location
-			System.out.println("Enter Menu's Origin Location:");
-			System.out.print("> ");
-			String location = userInput.nextLine();
-			
-			emp.insertMenu(name, price, lore, location);
-		}
-		
-		sect = 1;
-		
-		return;
-	}
-	
-	// Section 9
-	public void updateMenu() {
-		// Get Menu ID
-		System.out.println("Enter Menu ID:")
-		System.out.print("> ");
-		int menu_id = userInput.nextInt();
-		userInput.nextLine();
-		
-		System.out.println("Which One Would You Like to Update?");
-		System.out.println("1. Name");
-		System.out.println("2. Price");
-		System.out.print("> ");
-		
-		int type = userInput.nextInt();
-		userInput.nextLine();
-		
-		while(type <= 0 || type > 2) {
-			System.out.println();
-			System.out.println("Invalid Input! Please Try Again!!");
-			System.out.println("Which One Would You Like to Update?");
-			System.out.println("1. Name");
-			System.out.println("2. Price");
-			System.out.print("> ");
-			type = userInput.nextInt();
-			userInput.nextLine();
-		}
-		
-		if(type == 1) {
-			System.out.println("Enter New Menu Name:");
-			System.out.print("> ");
-			String new_name = userInput.nextLine();
-			
-			emp.updateMenu(menu_id, new_name);
-		} else {
-			System.out.println("Enter New Menu Price:");
-			System.out.print("> ");
-			double new_price = userInput.nextDouble();
-			
-			emp.updateMenu(menu_id, new_price);
-		}
-		
-		sect = 1;
-		
-		return;
-	}
-	
-	// Section 10
-	public void deleteMenu() {
-		// Get Menu ID
-		System.out.println("Enter Menu ID:")
-		System.out.print("> ");
-		int menu_id = userInput.nextInt();
-		userInput.nextLine();
-		
-		emp.deleteMenu(menu_id);
-		
-		sect = 1;
-		return;
-	}
-	
-	// Section 11
-	public void viewTable() {
-		emp.viewTable();
-		
-		sect = 1;
-		
-		return;
-	}
-	
-	// Section 12
-	public void logout() {
-		System.out.println("See you again, " + emp.name + "!");
-		
-		emp.logout();
-		sect = 2;
-		
-		return;
-	}
-	
-    public static void main(String[] args) {
-        sect = 2;
-        while() {
-        	System.out.println();
-        	System.out.println();
-        	if(sect == 2) {
-        		login();
-        	} else if (sect == 1) {
-        		homeMenu();
-        	} else if(sect == 3) {
-        		viewOrder();
-        	} else if(sect == 4) {
-        		addReservation();
-        	} else if(sect == 5) {
-        		addOrder();
-        	} else if(sect == 6) {
-        		finalizeOrder();
-        	} else if(sect == 7) {
-        		viewMenu();
-        	} else if(sect == 8) {
-        		insertMenu();
-        	} else if(sect == 9) {
-        		updateMenu();
-        	} else if(sect == 10) {
-        		deleteMenu();
-        	} else if(sect == 11) {
-        		viewTable();
-        	} else if(sect == 12) {
-        		logout();
-        	} else if(sect == 0) {
-        		break;
-        	} else {
-        		System.out.println("Invalid Section, Please Try Again");
-        		
-        		if(emp.checkLoggedIn()) {
-        			sect = 1;
-        		} else {
-        			sect = 2;
-        		}
-        	}
+public class Main {
+
+    // Class that handles all the main menu functions, i.e. the interface through
+    // which the user interacts with the system.
+
+    static int sect;
+    static Scanner user_input = new Scanner(System.in);
+    static EmployeeAccount emp_acc = EmployeeAccount.getInstance();
+
+    // Private utility functions
+
+    // Reads an integer.
+    // If lo is not null, check if the integer is not less than lo.
+    // If hi is not null, check if the integer is not greater than hi.
+    // In case of invalid input, keep going until user sends valid input.
+    private static int readInteger(String prompt, String error_message, Integer lo, Integer hi) {
+        while (true) {
+            System.out.print(prompt);
+
+            int ret = 0;
+            try {
+                ret = user_input.nextInt();
+            } catch (Exception e) {
+                System.out.println(error_message);
+            }
+            user_input.nextLine();
+
+            if (lo != null && hi != null) {
+                if (ret < lo || ret > hi) {
+                    System.out.println(error_message);
+                }
+            }
+
+            return ret;
         }
-        
-        System.out.println("Thank you for your service");
-        
     }
+
+    // Reads a double.
+    // If lo is not null, check if the integer is not less than lo.
+    // If hi is not null, check if the integer is not greater than hi.
+    // In case of invalid input, keep going until user sends valid input.
+    private static double readDouble(String prompt, String error_message, Double lo, Double hi) {
+        while (true) {
+            System.out.print(prompt);
+
+            double ret = 0;
+            try {
+                ret = user_input.nextDouble();
+            } catch (Exception e) {
+                System.out.println(error_message);
+            }
+            user_input.nextLine();
+
+            if (lo != null && hi != null) {
+                if (ret < lo || ret > hi) {
+                    System.out.println(error_message);
+                }
+            }
+
+            return ret;
+        }
+    }
+
+    // Section 1: Home menu
+    private static void homeMenu() {
+        System.out.printf("Hello %s, what would you like to do?\n", emp_acc.getName());
+        System.out.println(" 1. View Order");
+        System.out.println(" 2. Add Reservasion");
+        System.out.println(" 3. Add Menu to an Order");
+        System.out.println(" 4. Finalize Order");
+        System.out.println(" 5. View Menu");
+        System.out.println(" 6. Insert Menu");
+        System.out.println(" 7. Update Menu");
+        System.out.println(" 8. Delete Menu");
+        System.out.println(" 9. Logout");
+        System.out.println("10. View Table");
+        System.out.println(" 0. Exit");
+
+        int resp = readInteger("> ", "Undefined menu section", 0, 10);
+
+        // Add 2 to user input since section 1 and 2 is reserved for home menu and
+        // login,
+        // except for exit
+        sect = resp;
+        if (resp > 0) {
+            sect += 2;
+        }
+
+        return;
+    }
+
+    // Section 2: Login
+    private static void login() {
+        System.out.println("Enter Employee ID:");
+        System.out.print("> ");
+
+        int emp_id = readInteger("> ", "Invalid employee ID format", null, null);
+        emp_acc.login(emp_id);
+
+        // Return to home menu
+        sect = 1;
+
+        return;
+    }
+
+    // Section 3: View order
+    private static void viewOrder() {
+        emp_acc.viewOrder();
+
+        // Return to home menu
+        sect = 1;
+
+        return;
+    }
+
+    // Section 4: Add reservation
+    private static void addReservation() {
+        // Get customer name
+        System.out.println("Enter customer name:");
+        System.out.print("> ");
+        String name = user_input.nextLine();
+
+        // Get table list
+        System.out.println("How many tables?");
+        int number_of_tables = readInteger("> ", "Invalid number of tables", 1, null);
+
+        ArrayList<Integer> table_id = new ArrayList<Integer>();
+        for (int i = 1; i <= number_of_tables; i++) {
+            String prompt = String.format("Enter %d-th table ID: ", i);
+            table_id.add(readInteger(prompt, "Invalid table ID", null, null));
+        }
+
+        // Get number of persons
+        System.out.println("How many persons for this reservation?");
+        int number_of_persons = readInteger("> ", "Invalid number of persons", 1, null);
+
+        emp_acc.addOrderInReserve(name, table_id, number_of_persons);
+
+        // Return to home menu
+        sect = 1;
+
+        return;
+    }
+
+    // Section 5: Add order
+    private static void addOrder() {
+        // Get order ID
+        System.out.println("Enter order ID:");
+        int order_id = readInteger("> ", "Invalid order ID", null, null);
+
+        // Get menu list
+        System.out.println("How many menu items?");
+        int number_of_menu = readInteger("> ", "Invalid number of menu items", 1, null);
+
+        ArrayList<Integer> menu_id = new ArrayList<Integer>();
+        for (int i = 1; i <= number_of_menu; i++) {
+            String prompt = String.format("Enter %d-th menu ID: ", i);
+            menu_id.add(readInteger(prompt, "Invalid menu ID", null, null));
+        }
+
+        emp_acc.addMenuToOrder(order_id, menu_id);
+
+        // Return to home menu
+        sect = 1;
+
+        return;
+    }
+
+    // Section 6: Finalize order
+    private static void finalizeOrder() {
+        // Get order ID
+        System.out.println("Enter order ID:");
+        int order_id = readInteger("> ", "Invalid order ID", null, null);
+
+        emp_acc.finalizeOrder(order_id);
+
+        // Return to home menu
+        sect = 1;
+
+        return;
+    }
+
+    // Section 7 : View menu
+    private static void viewMenu() {
+        emp_acc.viewMenu();
+
+        sect = 1;
+
+        return;
+    }
+
+    // Section 8: Insert menu
+    private static void insertMenu() {
+        System.out.println("Which type of menu do you want to insert?");
+        System.out.println("1. Regular");
+        System.out.println("2. Special");
+        System.out.println("3. Local Special");
+        int type = readInteger("> ", "Invalid type", 1, 3);
+
+        if (type == 1) {
+            // Get name
+            System.out.println("Enter menu name:");
+            System.out.print("> ");
+            String name = user_input.nextLine();
+
+            // Get price
+            System.out.println("Enter menu price:");
+            double price = readDouble("> ", "Invalid menu price", 0.0, null);
+
+            emp_acc.insertMenu(name, price);
+
+        } else if (type == 2) {
+            // Get name
+            System.out.println("Enter menu name:");
+            System.out.print("> ");
+            String name = user_input.nextLine();
+
+            // Get price
+            System.out.println("Enter menu price:");
+            double price = readDouble("> ", "Invalid menu price", 0.0, null);
+
+            // Get narration
+            System.out.println("Enter narration for this menu:");
+            System.out.print("> ");
+            String lore = user_input.nextLine();
+
+            emp_acc.insertMenu(name, price, lore);
+
+        } else {
+            // Get name
+            System.out.println("Enter menu name:");
+            System.out.print("> ");
+            String name = user_input.nextLine();
+
+            // Get price
+            System.out.println("Enter menu price:");
+            double price = readDouble("> ", "Invalid menu price", 0.0, null);
+
+            // Get narration
+            System.out.println("Enter narration for this menu:");
+            System.out.print("> ");
+            String lore = user_input.nextLine();
+
+            // Get location
+            System.out.println("Enter this menu's origin location:");
+            System.out.print("> ");
+            String location = user_input.nextLine();
+
+            emp_acc.insertMenu(name, price, lore, location);
+        }
+
+        // Return to home menu
+        sect = 1;
+
+        return;
+    }
+
+    // Section 9: Update menu
+    private static void updateMenu() {
+        // Get menu ID
+        System.out.println("Enter menu ID:");
+        int menu_id = readInteger("> ", "Invalid menu ID", null, null);
+
+        System.out.println("Which data would you like to update?");
+        System.out.println("1. Name");
+        System.out.println("2. Price");
+        System.out.print("> ");
+
+        int type = readInteger("> ", "Invalid input", 1, 2);
+
+        if (type == 1) {
+            System.out.println("Enter new menu name:");
+            System.out.print("> ");
+            String new_name = user_input.nextLine();
+
+            emp_acc.updateMenu(menu_id, new_name);
+
+        } else {
+            System.out.println("Enter new menu price:");
+            double new_price = readDouble("> ", "Invalid price", 0.0, null);
+
+            emp_acc.updateMenu(menu_id, new_price);
+        }
+
+        // Return to home menu
+        sect = 1;
+
+        return;
+    }
+
+    // Section 10: Delete menu
+    private static void deleteMenu() {
+        // Get Menu ID
+        System.out.println("Enter menu ID:");
+        int menu_id = readInteger("> ", "Invalid menu ID", null, null);
+
+        emp_acc.deleteMenu(menu_id);
+
+        // Return to home menu
+        sect = 1;
+
+        return;
+    }
+
+    // Section 11: View table
+    private static void viewTable() {
+        emp_acc.viewTable();
+
+        // Return to home menu
+        sect = 1;
+
+        return;
+    }
+
+    // Section 12: Logout
+    private static void logout() {
+        System.out.printf("See you again, %s!\n", emp_acc.getName());
+
+        emp_acc.logout();
+
+        // Return to login page
+        sect = 2;
+
+        return;
+    }
+
+    public static void main(String[] args) {
+        // Begin at login page
+        sect = 2;
+
+        while (true) {
+            System.out.println();
+            System.out.println();
+            if (sect == 1) {
+                homeMenu();
+            } else if (sect == 2) {
+                login();
+            } else if (sect == 3) {
+                viewOrder();
+            } else if (sect == 4) {
+                addReservation();
+            } else if (sect == 5) {
+                addOrder();
+            } else if (sect == 6) {
+                finalizeOrder();
+            } else if (sect == 7) {
+                viewMenu();
+            } else if (sect == 8) {
+                insertMenu();
+            } else if (sect == 9) {
+                updateMenu();
+            } else if (sect == 10) {
+                deleteMenu();
+            } else if (sect == 11) {
+                viewTable();
+            } else if (sect == 12) {
+                logout();
+            } else if (sect == 0) {
+                break;
+            } else {
+                // This part should be unreachable as input has been validated by readInteger()
+                try {
+                    throw new Exception("Invalid section");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        System.out.println("Thank you for your service");
+    }
+
 }

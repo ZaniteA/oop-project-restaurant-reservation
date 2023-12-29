@@ -1,11 +1,12 @@
 package employee_account;
 
 import java.sql.*;
-
-// Class that enables the user to interact with the database as an employee.
-// Implemented using the Singleton principle.
+import java.util.ArrayList;
 
 public final class EmployeeAccount {
+
+    // Class that enables the user to interact with the database as an employee.
+    // Implemented using the Singleton principle.
 
     // Singleton instance
     private static EmployeeAccount instance;
@@ -14,6 +15,7 @@ public final class EmployeeAccount {
     private static Integer restaurant_id;
     private static Restaurant current_restaurant;
     private static Connection sql_connection;
+    private static String name;
 
     // Hide the constructor, as the class is a singleton
     private EmployeeAccount() {
@@ -84,7 +86,8 @@ public final class EmployeeAccount {
         }
     }
 
-    // Logs the user in, setting the id, restaurant_id, and current_restaurant to non-NULL values.
+    // Logs the user in, setting the id, restaurant_id, and current_restaurant to
+    // non-NULL values.
     public Boolean login(Integer employee_id) {
         try {
             // Get the restaurant ID from the employee ID
@@ -95,6 +98,7 @@ public final class EmployeeAccount {
 
             while (employee_rs.next()) {
                 restaurant_id = employee_rs.getInt("RestaurantID");
+                name = employee_rs.getString("Name");
             }
 
             // If no restaurant ID was found, the employee ID is invalid
@@ -113,26 +117,40 @@ public final class EmployeeAccount {
 
     // Logs the user out, setting id, restaurant_id, and current_restaurant to NULL.
     public void logout() {
-        if (!checkLoggedIn()) return;
+        if (!checkLoggedIn())
+            return;
 
         id = null;
         restaurant_id = null;
         current_restaurant = null;
+        name = null;
+    }
+
+    // Gets the employee's name.
+    // The name itself is private, to prevent tampering from outside sources.
+    public String getName() {
+        if (!checkLoggedIn())
+            return;
+
+        return name;
     }
 
     // Views all menu in the restaurant the employee is working in.
     public void viewMenu() {
-        if (!checkLoggedIn()) return;
+        if (!checkLoggedIn())
+            return;
 
         current_restaurant.viewMenu();
     }
 
     // Several functions to insert a new menu.
-    // The function insertMenu is overloaded depending on the type of menu to insert.
+    // The function insertMenu is overloaded depending on the type of menu to
+    // insert.
 
     // Inserts a regular menu, and returns the menu ID.
     public Integer insertMenu(String name, Double price) {
-        if (!checkLoggedIn()) return;
+        if (!checkLoggedIn())
+            return;
 
         RegularMenu current_menu = new RegularMenu(name, price);
         return current_restaurant.insertMenu(current_menu);
@@ -140,7 +158,8 @@ public final class EmployeeAccount {
 
     // Inserts a special menu, and returns the menu ID.
     public Integer insertMenu(String name, Double price, String lore) {
-        if (!checkLoggedIn()) return;
+        if (!checkLoggedIn())
+            return;
 
         SpecialMenu current_menu = new SpecialMenu(name, price, lore);
         return current_restaurant.insertMenu(current_menu);
@@ -148,7 +167,8 @@ public final class EmployeeAccount {
 
     // Inserts a local menu, and returns the menu ID.
     public Integer insertMenu(String name, Double price, String lore, String location) {
-        if (!checkLoggedIn()) return;
+        if (!checkLoggedIn())
+            return;
 
         LocalMenu current_menu = new LocalMenu(name, price, lore, location);
         return current_restaurant.insertMenu(current_menu);
@@ -159,35 +179,41 @@ public final class EmployeeAccount {
 
     // Updates the name of a menu. Returns TRUE if the menu is successfully updated.
     public Boolean updateMenu(Integer id, String new_name) {
-        if (!checkLoggedIn()) return;
+        if (!checkLoggedIn())
+            return;
 
         current_restaurant.updateMenu(id, new_name);
     }
 
-    // Updates the price of a menu. Returns TRUE if the menu is successfully updated.
+    // Updates the price of a menu. Returns TRUE if the menu is successfully
+    // updated.
     public Boolean updateMenu(Integer id, Double new_price) {
-        if (!checkLoggedIn()) return;
+        if (!checkLoggedIn())
+            return;
 
         current_restaurant.updateMenu(id, new_price);
     }
 
     // Deletes a menu. Returns TRUE if the menu is successfully deleted.
     public Boolean deleteMenu(Integer id) {
-        if (!checkLoggedIn()) return;
+        if (!checkLoggedIn())
+            return;
 
         current_restaurant.deleteMenu(id);
     }
 
     // Views the list of tables.
     public void viewTable() {
-        if (!checkLoggedIn()) return;
+        if (!checkLoggedIn())
+            return;
 
         current_restaurant.viewTable();
     }
 
     // Views the list of orders.
     public void viewOrder() {
-        if (!checkLoggedIn()) return;
+        if (!checkLoggedIn())
+            return;
 
         current_restaurant.viewOrder();
     }
@@ -196,7 +222,8 @@ public final class EmployeeAccount {
     // Updates the table statuses accordingly.
     // Returns the ID of the newly created order.
     public Integer addOrderInReserve(String customer_name, ArrayList<Integer> table_id, Integer persons) {
-        if (!checkLoggedIn()) return;
+        if (!checkLoggedIn())
+            return;
 
         Order current_order = new Order(customer_name, table_id, persons);
         if (current_restaurant.createOrder(current_order)) {
@@ -210,7 +237,8 @@ public final class EmployeeAccount {
     // Adds a list of menu items to an order, and sets the status to `in order` (1).
     // Returns the number of successfully added menu items.
     public Integer addMenuToOrder(Integer order_id, ArrayList<Integer> menu_id) {
-        if (!checkLoggedIn()) return;
+        if (!checkLoggedIn())
+            return;
 
         // If the order ID is invalid (doesn't exist or not in the correct restaurant)
         if (!current_restaurant.orderInRestaurant(order_id)) {
@@ -238,7 +266,8 @@ public final class EmployeeAccount {
     // Finalizes an order. Sets the status to `finalized` (2).
     // Also prints the bill and updates the table statuses accordingly.
     public void finalizeOrder(Integer order_id) {
-        if (!checkLoggedIn()) return;
+        if (!checkLoggedIn())
+            return;
 
         // If the order ID is invalid (doesn't exist or not in the correct restaurant)
         if (!current_restaurant.orderInRestaurant(order_id)) {
@@ -255,5 +284,5 @@ public final class EmployeeAccount {
         current_order.printBill();
         current_order.setTableStatus(false);
     }
-    
+
 }
