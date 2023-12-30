@@ -22,7 +22,7 @@ public class Order {
     public final String[] status_name = { "in reserve", "in order", "finalized" };
 
     // Constructor to create a new order.
-    Order(Integer id, String customer_name, Integer persons, Integer status, ArrayList<Integer> table_id,
+    public Order(Integer id, String customer_name, Integer persons, Integer status, ArrayList<Integer> table_id,
             ArrayList<Integer> menu_id) {
         this.id = id;
         this.customer_name = customer_name;
@@ -33,7 +33,7 @@ public class Order {
     }
 
     // Constructor to create a new order based on a new reservation.
-    Order(String customer_name, Integer persons, ArrayList<Integer> table_id) {
+    public Order(String customer_name, Integer persons, ArrayList<Integer> table_id) {
         this.customer_name = customer_name;
         this.persons = persons;
         this.table_id = table_id;
@@ -86,6 +86,7 @@ public class Order {
             }
 
         } catch (Exception e) {
+            System.out.println("PreparedStatement failure");
             e.printStackTrace();
         }
 
@@ -122,6 +123,7 @@ public class Order {
                 total_cap += cap;
 
             } catch (Exception e) {
+                System.out.println("PreparedStatement failure");
                 e.printStackTrace();
             }
         }
@@ -158,12 +160,13 @@ public class Order {
             }
 
         } catch (Exception e) {
+            System.out.println("PreparedStatement failure");
             e.printStackTrace();
         }
     }
 
     // Updates the status of the table.
-    public void setTable(Boolean new_status, Connection sql_connection) {
+    public void setTableStatus(Boolean new_status, Connection sql_connection) {
         try {
             // 1st query to get the tableID from OrderTableMap
             PreparedStatement table_pst = sql_connection
@@ -187,12 +190,14 @@ public class Order {
             }
 
         } catch (Exception e) {
+            System.out.println("PreparedStatement failure");
             e.printStackTrace();
         }
     }
 
     // Updates the menu of the order.
-    public void addMenu(Integer new_menu_id, Connection sql_connection) {
+    // Returns TRUE if the menu was successfully updated.
+    public Boolean addMenu(Integer new_menu_id, Connection sql_connection) {
         menu_id.add(new_menu_id);
         try {
             PreparedStatement status_pst = sql_connection
@@ -205,9 +210,14 @@ public class Order {
                 throw new Exception("Insert failed");
             }
 
+            return true;
         } catch (Exception e) {
+            System.out.println("PreparedStatement failure");
             e.printStackTrace();
         }
+
+        // If an exception happened
+        return false;
     }
 
     // Prints the bill of the order.
@@ -288,6 +298,7 @@ public class Order {
                 }
 
             } catch (Exception e) {
+                System.out.println("PreparedStatement failure");
                 e.printStackTrace();
             }
         }

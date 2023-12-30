@@ -99,8 +99,6 @@ public class Main {
     // Section 2: Login
     private static void login() {
         System.out.println("Enter Employee ID:");
-        System.out.print("> ");
-
         int emp_id = readInteger("> ", "Invalid employee ID format", null, null);
         emp_acc.login(emp_id);
 

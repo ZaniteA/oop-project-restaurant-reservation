@@ -63,6 +63,7 @@ public class LocalMenu extends Menu {
             }
 
         } catch (Exception e) {
+            System.out.println("PreparedStatement failure");
             e.printStackTrace();
         }
 

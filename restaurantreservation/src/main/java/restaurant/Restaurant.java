@@ -3,476 +3,502 @@ package restaurant;
 import java.sql.*;
 
 import menu.LocalMenu;
-import menu.Menu;
 import menu.RegularMenu;
 import menu.SpecialMenu;
 import order.Order;
+import table.Table;
 
 public abstract class Restaurant {
-	int id;
-	Connection sql_connection; 
 
+	// An abstract class of a restaurant, holding its ID and a connection.
+	// All data related to the restaurant will be fetched through its methods.
+	// Methods not implemented here are meant to be overridden by the ones in
+	// LocalRestaurant and MainRestaurant because of differing behaviors.
+
+	int id;
+	Connection sql_connection;
+
+	// Constructor to create a new restaurant given ID.
 	public Restaurant(int id, Connection sql_connection) {
-		// Create Connection
 		this.id = id;
 		this.sql_connection = sql_connection;
 	}
-	
+
+	// Returns TRUE if the menu specified is in this restaurant.
 	private Boolean menuInRestaurant(int menu_id) {
 		try {
-			PreparedStatement select_menu = sql_connection.prepareStatement("SELECT COUNT(*) FROM RestaurantMenuMap "
-					+ "WHERE RestaurantID = ? AND MenuID = ?");
-			select_menu.setInt(1, this.id);
-			select_menu.setInt(2, menu_id);
-			
-			ResultSet res_menu =  select_menu.executeQuery();
-			
+			PreparedStatement menu_pst = sql_connection
+					.prepareStatement("select count(*) from RestaurantMenuMap where RestaurantID = ? and MenuID = ?");
+			menu_pst.setInt(1, this.id);
+			menu_pst.setInt(2, menu_id);
+			ResultSet menu_rs = menu_pst.executeQuery();
+
 			// Check menu count
-			if (res_menu.next()) {    
-			    int cnt = res_menu.getInt(1);
-			    if(cnt > 0){
-			    	return true;
-			    }
-			} 
-			
+			if (menu_rs.next()) {
+				int cnt = menu_rs.getInt(1);
+				if (cnt > 0) {
+					return true;
+				}
+			}
+
 		} catch (Exception e) {
-			System.out.println("PreparedStatement Failed");
+			System.out.println("PreparedStatement failure");
 			e.printStackTrace();
 		}
-		
-		
+
 		return false;
 	}
-	
-	
+
+	// Returns TRUE if the menu specified has been ordered before.
 	private Boolean menuOrdered(int menu_id) {
 		try {
-			PreparedStatement select_menu = sql_connection.prepareStatement("SELECT COUNT(*) FROM OrderMenuMap WHERE MenuID = ?");
-			select_menu.setInt(1, menu_id);
-			
-			ResultSet res_menu =  select_menu.executeQuery();
-			
+			PreparedStatement menu_pst = sql_connection
+					.prepareStatement("select count(*) from OrderMenuMap where MenuID = ?");
+			menu_pst.setInt(1, menu_id);
+
+			ResultSet menu_rs = menu_pst.executeQuery();
+
 			// Check menu count
-			if (res_menu.next()) {    
-			    int cnt = res_menu.getInt(1);
-			    if(cnt > 0){
-			    	return true;
-			    }
-			} 
-			
-			
+			if (menu_rs.next()) {
+				int cnt = menu_rs.getInt(1);
+				if (cnt > 0) {
+					return true;
+				}
+			}
+
 		} catch (Exception e) {
-			System.out.println("PreparedStatement Failed");
+			System.out.println("PreparedStatement failure");
 			e.printStackTrace();
 		}
-		
-		
+
 		return false;
 	}
-	
+
+	// Abstract methods to be implemented in subclasses.
 	public abstract void viewMenu();
+
 	public abstract Integer insertMenu(SpecialMenu new_menu);
+
 	public abstract Integer insertMenu(LocalMenu new_menu);
-	
+
+	// Inserts a new menu.
+	// Returns the newly inserted menu's ID if the insert was successful, and -1
+	// otherwise.
 	public Integer insertMenu(RegularMenu new_menu) {
 		try {
-			PreparedStatement insert_regular = sql_connection.prepareStatement("INSERT INTO MsRegularMenu (Name, Price)"
-					+ "VALUES (?, ?)");
+			PreparedStatement insert_regular = sql_connection
+					.prepareStatement("insert into MsRegularMenu (Name, Price) values (?, ?)");
 			insert_regular.setString(1, new_menu.name);
 			insert_regular.setDouble(2, new_menu.price);
-			
-			// This variable check if row inserted correctly
-			int check;
-			
-			check = insert_regular.executeUpdate();
-			if(check == 0) {
-				throw new Exception("Regular Menu Table Insert Failed");
+
+			// This variable checks if the row was inserted correctly
+			int check = insert_regular.executeUpdate();
+			if (check == 0) {
+				throw new Exception("RegularMenu table insertion failed");
 			}
-			
-			// Get newly inserted regular id
-			PreparedStatement select_regular = sql_connection.prepareStatement("SELECT MAX(RegularID)FROM MsRegularMenu");
-			
-			ResultSet res_regular = select_regular.executeQuery();
-			
+
+			// Get newly inserted RegularID
+			PreparedStatement regular_pst = sql_connection.prepareStatement("select max(RegularID) from MsRegularMenu");
+			ResultSet regular_rs = regular_pst.executeQuery();
+
 			int regular_id = -1;
-			if(res_regular.next()) {
-				regular_id = res_regular.getInt(1);
+			if (regular_rs.next()) {
+				regular_id = regular_rs.getInt(1);
 			} else {
 				throw new Exception("Failed to get new regular menu ID");
 			}
-			
-			PreparedStatement insert_menu = sql_connection.prepareStatement("INSERT INTO MsMenu (RegularID, SpecialID, LocalID, RestaurantID)"
-					+ "VALUES (?, NULL, NULL, ?");
+
+			// Insert the RegularID into MsMenu
+			PreparedStatement insert_menu = sql_connection.prepareStatement(
+					"insert into MsMenu (RegularID, SpecialID, LocalID, RestaurantID) values (?, NULL, NULL, ?");
 			insert_menu.setInt(1, regular_id);
 			insert_menu.setInt(2, this.id);
-			
+
 			check = insert_menu.executeUpdate();
-			if(check == 0) {
-				throw new Exception("Menu Table Insert Failed");
+			if (check == 0) {
+				throw new Exception("Menu table insertion failed");
 			}
-			
-			// Get newly inserted menu id
-			PreparedStatement select_menu = sql_connection.prepareStatement("SELECT MAX(MenuID)FROM MsMenu");
-			
-			ResultSet res_menu = select_menu.executeQuery();
-			
+
+			// Get newly inserted menu ID
+			PreparedStatement menu_pst = sql_connection.prepareStatement("select max(MenuID) from MsMenu");
+			ResultSet menu_rs = menu_pst.executeQuery();
+
 			int menu_id = -1;
-			if(res_menu.next()) {
-				menu_id = res_menu.getInt(1);
+			if (menu_rs.next()) {
+				menu_id = menu_rs.getInt(1);
 			} else {
 				throw new Exception("Failed to get new menu ID");
 			}
-			
+
 			return menu_id;
-		} catch(Exception e){
-			System.out.println("PreparedStatement Failed");
+
+		} catch (Exception e) {
+			System.out.println("PreparedStatement failure");
 			e.printStackTrace();
 		}
+
+		// If the insertion failed
 		return -1;
 	}
-	
+
+	// Returns TRUE if the order specified is in this restaurant.
 	public Boolean orderInRestaurant(int order_id) {
 		try {
-			PreparedStatement select_order = sql_connection.prepareStatement("SELECT COUNT(*) FROM RestaurantOrderMap "
-					+ "WHERE RestaurantID = ? AND OrderID = ?");
-			select_order.setInt(1, this.id);
-			select_order.setInt(2, order_id);
-			
-			ResultSet res_order =  select_order.executeQuery();
-			
+			PreparedStatement order_pst = sql_connection
+					.prepareStatement("select count(*) from RestaurantOrderMap where RestaurantID = ? and OrderID = ?");
+			order_pst.setInt(1, this.id);
+			order_pst.setInt(2, order_id);
+			ResultSet order_rs = order_pst.executeQuery();
+
 			// Check order count
-			if (res_order.next()) {    
-			    int cnt = res_order.getInt(1);
-			    if(cnt > 0){
-			    	return true;
-			    }
-			} 
-			
-			
+			if (order_rs.next()) {
+				int cnt = order_rs.getInt(1);
+				if (cnt > 0) {
+					return true;
+				}
+			}
+
 		} catch (Exception e) {
-			System.out.println("PreparedStatement Failed");
+			System.out.println("PreparedStatement failure");
 			System.out.println(e.getMessage());
 		}
-		
-		
+
 		return false;
 	}
-	
-	public void updateMenu(int menu_id, String new_name) {
-		if(!menuInRestaurant(menu_id)) {
+
+	// Methods to update various data of the menu, overloaded for updating name and
+	// price.
+
+	// Updates the name of a menu.
+	// Returns TRUE if the update was successful.
+	public Boolean updateMenu(int menu_id, String new_name) {
+		if (!menuInRestaurant(menu_id)) {
 			System.out.println("Menu does not exist in this restaurant");
-			return;
+			return false;
 		}
-		
-		if(menuOrdered(menu_id)) {
+		if (menuOrdered(menu_id)) {
 			System.out.println("Can't update menu since some customers have ordered this menu before");
-			return;
+			return false;
 		}
-		
+
 		try {
-			PreparedStatement select_menu = sql_connection.prepareStatement("SELECT RegularID, SpecialID, LocalID FROM MsMenu WHERE MenuID = ?");
-			select_menu.setInt(1, menu_id);
-			
-			ResultSet res_menu =  select_menu.executeQuery();
-			
+			PreparedStatement menu_pst = sql_connection
+					.prepareStatement("select RegularID, SpecialID, LocalID from MsMenu where MenuID = ?");
+			menu_pst.setInt(1, menu_id);
+			ResultSet menu_rs = menu_pst.executeQuery();
+
 			int type = -1; // 1 -> regular, 2 -> special, 3 -> local
-			int submenu_id = -1, tmp;
-			
+			int submenu_id = -1, tmp = -1;
+
 			// Check menu count
-			if (res_menu.next()) {    
+			if (menu_rs.next()) {
 				// Check for each regular, special, and local id (only one is not null)
-				
-				tmp = res_menu.getInt("RegularID");
-				if(tmp != 0) {
+
+				tmp = menu_rs.getInt("RegularID");
+				if (tmp != 0) {
 					submenu_id = tmp;
 					type = 1;
 				}
-				
-				tmp = res_menu.getInt("SpecialID");
-				if(tmp != 0) {
+
+				tmp = menu_rs.getInt("SpecialID");
+				if (tmp != 0) {
 					submenu_id = tmp;
 					type = 2;
 				}
-				
-				tmp = res_menu.getInt("LocalID");
-				if(tmp != 0) {
+
+				tmp = menu_rs.getInt("LocalID");
+				if (tmp != 0) {
 					submenu_id = tmp;
 					type = 3;
 				}
 			} else {
 				System.out.println("Menu ID not found!");
-				return;
+				return false;
 			}
-			if(type == -1) {
-				System.out.println("Menu is not a regular, special, nor local. Please contact your administrator");;
-				return;
+
+			if (type == -1) {
+				System.out.println(
+						"Menu is neither a regular, special, nor local menu. Please contact your administrator");
+				return false;
 			}
-			
-			String update_query;
-			if(type == 1) {
-				update_query = "UPDATE MsRegularMenu SET Name = ? WHERE RegularID = ?";
-			} else if(type == 2) {
-				update_query = "UPDATE MsSpecialMenu SET Name = ? WHERE SpecialID = ?";
+
+			String update_query = "";
+			if (type == 1) {
+				update_query = "update MsRegularMenu set Name = ? where RegularID = ?";
+			} else if (type == 2) {
+				update_query = "update MsSpecialMenu set Name = ? where SpecialID = ?";
 			} else {
-				update_query = "UPDATE MsLocalMenu SET Name = ? WHERE LocalID = ?";
+				update_query = "update MsLocalMenu set Name = ? where LocalID = ?";
 			}
 			PreparedStatement update_menu = sql_connection.prepareStatement(update_query);
-			update_menu.setString(1,  new_name);
+			update_menu.setString(1, new_name);
 			update_menu.setInt(2, submenu_id);
-			
+
 			int check = update_menu.executeUpdate();
-			if(check == 0) {
+			if (check == 0) {
 				throw new Exception("Update failed");
 			}
+
+			return true;
 		} catch (Exception e) {
-			System.out.println("PreparedStatement Failed");
+			System.out.println("PreparedStatement failure");
 			e.printStackTrace();
 		}
+
+		// If an exception happened
+		return false;
 	}
-	
-	public void updateMenu(int menu_id, Double new_price) {
-		if(!menuInRestaurant(menu_id)) {
+
+	// Updates the price of a menu.
+	// Returns TRUE if the update was successful.
+	public Boolean updateMenu(int menu_id, Double new_price) {
+		if (!menuInRestaurant(menu_id)) {
 			System.out.println("Menu does not exist in this restaurant");
-			return;
+			return false;
 		}
-		
-		if(menuOrdered(menu_id)) {
+		if (menuOrdered(menu_id)) {
 			System.out.println("Can't update menu since some customers have ordered this menu before");
-			return;
+			return false;
 		}
-		
+
 		try {
-			PreparedStatement select_menu = sql_connection.prepareStatement("SELECT RegularID, SpecialID, LocalID FROM MsMenu WHERE MenuID = ?");
-			select_menu.setInt(1, menu_id);
-			
-			ResultSet res_menu =  select_menu.executeQuery();
-			
+			PreparedStatement menu_pst = sql_connection
+					.prepareStatement("select RegularID, SpecialID, LocalID from MsMenu where MenuID = ?");
+			menu_pst.setInt(1, menu_id);
+			ResultSet menu_rs = menu_pst.executeQuery();
+
 			int type = -1; // 1 -> regular, 2 -> special, 3 -> local
-			int submenu_id = -1, tmp;
-			
+			int submenu_id = -1, tmp = -1;
+
 			// Check menu count
-			if (res_menu.next()) {    
+			if (menu_rs.next()) {
 				// Check for each regular, special, and local id (only one is not null)
-				
-				tmp = res_menu.getInt("RegularID");
-				if(tmp != 0) {
+
+				tmp = menu_rs.getInt("RegularID");
+				if (tmp != 0) {
 					submenu_id = tmp;
 					type = 1;
 				}
-				
-				tmp = res_menu.getInt("SpecialID");
-				if(tmp != 0) {
+
+				tmp = menu_rs.getInt("SpecialID");
+				if (tmp != 0) {
 					submenu_id = tmp;
 					type = 2;
 				}
-				
-				tmp = res_menu.getInt("LocalID");
-				if(tmp != 0) {
+
+				tmp = menu_rs.getInt("LocalID");
+				if (tmp != 0) {
 					submenu_id = tmp;
 					type = 3;
 				}
 			} else {
 				System.out.println("Menu ID not found!");
-				return;
+				return false;
 			}
-			if(type == -1) {
-				System.out.println("Menu is not a regular, special, nor local. Please contact your administrator");;
-				return;
+			if (type == -1) {
+				System.out.println(
+						"Menu is neither a regular, special, nor local menu. Please contact your administrator");
+				return false;
 			}
-			
-			
+
 			String update_query;
-			if(type == 1) {
-				update_query = "UPDATE MsRegularMenu SET Price = ? WHERE RegularID = ?";
-			} else if(type == 2) {
-				update_query = "UPDATE MsSpecialMenu SET Price = ? WHERE SpecialID = ?";
+			if (type == 1) {
+				update_query = "update MsRegularMenu set Price = ? where RegularID = ?";
+			} else if (type == 2) {
+				update_query = "update MsSpecialMenu set Price = ? where SpecialID = ?";
 			} else {
-				update_query = "UPDATE MsLocalMenu SET Price = ? WHERE LocalID = ?";
+				update_query = "update MsLocalMenu set Price = ? where LocalID = ?";
 			}
 			PreparedStatement update_menu = sql_connection.prepareStatement(update_query);
-			update_menu.setDouble(1,  new_price);
+			update_menu.setDouble(1, new_price);
 			update_menu.setInt(2, submenu_id);
-			
+
 			int check = update_menu.executeUpdate();
-			if(check == 0) {
+			if (check == 0) {
 				throw new Exception("Update failed");
 			}
+
+			return true;
 		} catch (Exception e) {
-			System.out.println("PreparedStatement Failed");
+			System.out.println("PreparedStatement failure");
 			e.printStackTrace();
 		}
+
+		// If an exception happened
+		return false;
 	}
-	
-	public void deleteMenu(int menu_id) {
-		if(!menuInRestaurant(menu_id)) {
+
+	// Deletes a menu from the restaurant.
+	// Returns TRUE if the update was successful.
+	public Boolean deleteMenu(int menu_id) {
+		if (!menuInRestaurant(menu_id)) {
 			System.out.println("Menu does not exist in this restaurant");
-			return;
+			return false;
 		}
-		
-		if(menuOrdered(menu_id)) {
+		if (menuOrdered(menu_id)) {
 			System.out.println("Can't delete menu since some customers have ordered this menu before");
-			return;
+			return false;
 		}
-		
+
 		try {
-			PreparedStatement select_menu = sql_connection.prepareStatement("SELECT RegularID, SpecialID, LocalID FROM MsMenu WHERE MenuID = ?");
-			select_menu.setInt(1, menu_id);
-			
-			ResultSet res_menu =  select_menu.executeQuery();
-			
+			PreparedStatement menu_pst = sql_connection
+					.prepareStatement("select RegularID, SpecialID, LocalID from MsMenu where MenuID = ?");
+			menu_pst.setInt(1, menu_id);
+			ResultSet menu_rs = menu_pst.executeQuery();
+
 			int type = -1; // 1 -> regular, 2 -> special, 3 -> local
-			int submenu_id = -1, tmp;
-			
+			int submenu_id = -1, tmp = -1;
+
 			// Check menu count
-			if (res_menu.next()) {    
+			if (menu_rs.next()) {
 				// Check for each regular, special, and local id (only one is not null)
-				
-				tmp = res_menu.getInt("RegularID");
-				if(tmp != 0) {
+				tmp = menu_rs.getInt("RegularID");
+				if (tmp != 0) {
 					submenu_id = tmp;
 					type = 1;
 				}
-				
-				tmp = res_menu.getInt("SpecialID");
-				if(tmp != 0) {
+
+				tmp = menu_rs.getInt("SpecialID");
+				if (tmp != 0) {
 					submenu_id = tmp;
 					type = 2;
 				}
-				
-				tmp = res_menu.getInt("LocalID");
-				if(tmp != 0) {
+
+				tmp = menu_rs.getInt("LocalID");
+				if (tmp != 0) {
 					submenu_id = tmp;
 					type = 3;
 				}
 			} else {
 				System.out.println("Menu ID not found!");
-				return;
+				return false;
 			}
-			if(type == -1) {
-				throw new Exception("Menu is not a regular, special, nor local. Please contact your administrator");
+			if (type == -1) {
+				System.out.println(
+						"Menu is neither a regular, special, nor local menu. Please contact your administrator");
+				return false;
 			}
-			
+
 			String delete_query;
-			if(type == 1) {
-				delete_query = "DELETE FROM MsRegularMenu WHERE RegularID = ?";
-			} else if(type == 2) {
-				delete_query = "DELETE FROM MsSpecialMenu WHERE SpecialID = ?";
+			if (type == 1) {
+				delete_query = "delete from MsRegularMenu where RegularID = ?";
+			} else if (type == 2) {
+				delete_query = "delete from MsSpecialMenu where SpecialID = ?";
 			} else {
-				delete_query = "DELETE FROM MsLocalMenu WHERE LocalID = ?";
+				delete_query = "delete from MsLocalMenu where LocalID = ?";
 			}
 			PreparedStatement delete_menu = sql_connection.prepareStatement(delete_query);
 			delete_menu.setInt(1, submenu_id);
-			
+
 			int check = delete_menu.executeUpdate();
-			if(check == 0) {
+			if (check == 0) {
 				throw new Exception("Update failed");
 			}
-			
+
+			return true;
 		} catch (Exception e) {
-			System.out.println("PreparedStatement Failed");
+			System.out.println("PreparedStatement failure");
 			e.printStackTrace();
 		}
+
+		// If an exception happened
+		return false;
 	}
-	
+
+	// Views all tables in the restaurant.
 	public void viewTable() {
 		try {
-			PreparedStatement select_table = sql_connection.prepareStatement("SELECT TableID FROM RestaurantTableMap"
-					+ "WHERE RestaurantID = ?");
-			select_table.setInt(1, this.id);
-			
-			ResultSet res_table = select_table.executeQuery();
-			
+			PreparedStatement table_pst = sql_connection
+					.prepareStatement("select TableID from RestaurantTableMap WHERE RestaurantID = ?");
+			table_pst.setInt(1, this.id);
+			ResultSet table_rs = table_pst.executeQuery();
+
 			System.out.println("Table List");
-			System.out.println("==============================================");
-			System.out.println();
-			while(res_table.next()) {
-				Table curr_table = Table.createFromID(res_table.getInt("TableID"), sql_connection); 
+			System.out.println("==================================================");
+			while (table_rs.next()) {
+				Table curr_table = Table.createFromID(table_rs.getInt("TableID"), sql_connection);
 				curr_table.print();
-				System.out.println("==============================================");
+				System.out.println("==================================================");
 			}
 			System.out.println();
-			
+
 		} catch (Exception e) {
-			System.out.println("PreparedStatement Failed");
+			System.out.println("PreparedStatement failure");
 			e.printStackTrace();
 		}
 	}
-	
+
+	// Views all orders in the restaurant.
 	public void viewOrder() {
 		try {
-			PreparedStatement select_table = sql_connection.prepareStatement("SELECT OrderID FROM RestaurantOrderMap"
-					+ "WHERE RestaurantID = ?");
-			select_table.setInt(1, this.id);
-			
-			ResultSet res_order = select_table.executeQuery();
-			
+			PreparedStatement order_pst = sql_connection
+					.prepareStatement("select OrderID from RestaurantOrderMap where RestaurantID = ?");
+			order_pst.setInt(1, this.id);
+			ResultSet order_rs = order_pst.executeQuery();
+
 			System.out.println("Order List");
-			System.out.println("==============================================");
-			System.out.println();
-			while(res_order.next()) {
-				Order curr_order = Order.createFromID(res_order.getInt("OrderID"), sql_connection);
+			System.out.println("==================================================");
+			while (order_rs.next()) {
+				Order curr_order = Order.createFromID(order_rs.getInt("OrderID"), sql_connection);
 				curr_order.print();
-				System.out.println("==============================================");
+				System.out.println("==================================================");
 			}
 			System.out.println();
+
 		} catch (Exception e) {
-			System.out.println("PreparedStatement Failed");
+			System.out.println("PreparedStatement failure");
 			e.printStackTrace();
 		}
 	}
-	
+
+	// Creates a new order in the restaurant.
+	// Returns the new order's ID if the creation was successful, and -1 otherwise.
 	public Integer createOrder(Order new_order) {
-		
 		try {
-			// Insert to MsOrder Table
-			PreparedStatement insert_order = sql_connection.prepareStatement("INSERT INTO MsOrder (CustomerName, Persons, Status)"
-					+ "VALUES (?, ?, ?)");
+			// Insert to MsOrder table
+			PreparedStatement insert_order = sql_connection
+					.prepareStatement("insert into MsOrder (CustomerName, Persons, Status) values (?, ?, ?)");
 			insert_order.setString(1, new_order.customer_name);
 			insert_order.setInt(2, new_order.persons);
 			insert_order.setInt(3, new_order.status);
-			
-			// This variable check if row inserted correctly
-			int check;
-			
-			check = insert_order.executeUpdate();
-			if(check == 0) {
-				throw new Exception("Order table Insert Failed");
+
+			// This variable checks if the row was inserted correctly
+			int check = insert_order.executeUpdate();
+			if (check == 0) {
+				throw new Exception("MsOrder table insertion failed");
 			}
-			
-			// Get newly inserted order id
-			PreparedStatement select_order = sql_connection.prepareStatement("SELECT MAX(OrderID) FROM MsOrder");
-			
-			ResultSet res_order = select_order.executeQuery();
-			
+
+			// Get newly inserted order ID
+			PreparedStatement order_pst = sql_connection.prepareStatement("select max(OrderID) from MsOrder");
+			ResultSet order_rs = order_pst.executeQuery();
+
 			int order_id = -1;
-			if(res_order.next()) {
-				order_id = res_order.getInt(1);
+			if (order_rs.next()) {
+				order_id = order_rs.getInt(1);
 			} else {
-				
 				throw new Exception("Failed to get new order ID");
 			}
-			
 			new_order.id = order_id;
-			
+
 			// Insert to RestaurantOrderMap
-			PreparedStatement insert_rob = sql_connection.prepareStatement("INSERT INTO RestaurantOrderMap (RestaurantID, OrderID)"
-					+ "VALUES (?, ?)");
+			PreparedStatement insert_rob = sql_connection
+					.prepareStatement("insert into RestaurantOrderMap (RestaurantID, OrderID) values (?, ?)");
 			insert_rob.setInt(1, this.id);
 			insert_rob.setInt(2, new_order.id);
-			
+
 			check = insert_rob.executeUpdate();
-			if(check == 0) {
-				throw new Exception("Restaurant-Order Map Table Insert Failed");
+			if (check == 0) {
+				throw new Exception("RestaurantOrderMap table insertion failed");
 			}
-			
+
 			new_order.setOrderStatus(0, sql_connection);
-			
 			return order_id;
+
 		} catch (Exception e) {
-			System.out.println("PreparedStatement Failed");
+			System.out.println("PreparedStatement failure");
 			System.out.println(e.getMessage());
 		}
-		
+
 		return -1;
 	}
 

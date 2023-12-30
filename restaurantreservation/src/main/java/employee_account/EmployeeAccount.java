@@ -4,6 +4,7 @@ import java.sql.*;
 import java.util.ArrayList;
 
 import menu.LocalMenu;
+import menu.RegularMenu;
 import menu.SpecialMenu;
 import order.Order;
 import restaurant.LocalRestaurant;
@@ -89,6 +90,7 @@ public final class EmployeeAccount {
             }
 
         } catch (Exception e) {
+            System.out.println("PreparedStatement failure");
             e.printStackTrace();
         }
     }
@@ -118,6 +120,7 @@ public final class EmployeeAccount {
             }
 
         } catch (Exception e) {
+            System.out.println("PreparedStatement failure");
             e.printStackTrace();
         }
         return false;
@@ -138,7 +141,7 @@ public final class EmployeeAccount {
     // The name itself is private, to prevent tampering from outside sources.
     public String getName() {
         if (!checkLoggedIn())
-            return;
+            return null;
 
         return name;
     }
@@ -155,28 +158,31 @@ public final class EmployeeAccount {
     // The function insertMenu is overloaded depending on the type of menu to
     // insert.
 
-    // Inserts a regular menu, and returns the menu ID.
+    // Inserts a regular menu.
+    // Returns the menu ID, or -1 if the insertion was not successful.
     public Integer insertMenu(String name, Double price) {
         if (!checkLoggedIn())
-            return;
+            return -1;
 
         RegularMenu current_menu = new RegularMenu(name, price);
         return current_restaurant.insertMenu(current_menu);
     }
 
-    // Inserts a special menu, and returns the menu ID.
+    // Inserts a special menu.
+    // Returns the menu ID, or -1 if the insertion was not successful.
     public Integer insertMenu(String name, Double price, String lore) {
         if (!checkLoggedIn())
-            return;
+            return -1;
 
         SpecialMenu current_menu = new SpecialMenu(name, price, lore);
         return current_restaurant.insertMenu(current_menu);
     }
 
-    // Inserts a local menu, and returns the menu ID.
+    // Inserts a local menu.
+    // Returns the menu ID, or -1 if the insertion was not successful.
     public Integer insertMenu(String name, Double price, String lore, String location) {
         if (!checkLoggedIn())
-            return;
+            return -1;
 
         LocalMenu current_menu = new LocalMenu(name, price, lore, location);
         return current_restaurant.insertMenu(current_menu);
@@ -188,26 +194,26 @@ public final class EmployeeAccount {
     // Updates the name of a menu. Returns TRUE if the menu is successfully updated.
     public Boolean updateMenu(Integer id, String new_name) {
         if (!checkLoggedIn())
-            return;
+            return false;
 
-        current_restaurant.updateMenu(id, new_name);
+        return current_restaurant.updateMenu(id, new_name);
     }
 
     // Updates the price of a menu. Returns TRUE if the menu is successfully
     // updated.
     public Boolean updateMenu(Integer id, Double new_price) {
         if (!checkLoggedIn())
-            return;
+            return false;
 
-        current_restaurant.updateMenu(id, new_price);
+        return current_restaurant.updateMenu(id, new_price);
     }
 
     // Deletes a menu. Returns TRUE if the menu is successfully deleted.
     public Boolean deleteMenu(Integer id) {
         if (!checkLoggedIn())
-            return;
+            return false;
 
-        current_restaurant.deleteMenu(id);
+        return current_restaurant.deleteMenu(id);
     }
 
     // Views the list of tables.
@@ -228,25 +234,27 @@ public final class EmployeeAccount {
 
     // Adds a new order and sets the status to `in reserve` (0).
     // Updates the table statuses accordingly.
-    // Returns the ID of the newly created order.
+    // Returns the ID of the newly created order, or -1 if the creation was not
+    // successful.
     public Integer addOrderInReserve(String customer_name, ArrayList<Integer> table_id, Integer persons) {
         if (!checkLoggedIn())
-            return;
+            return -1;
 
-        Order current_order = new Order(customer_name, table_id, persons);
-        if (current_restaurant.createOrder(current_order)) {
-            current_order.setTableStatus(true);
-            return true;
-        } else {
-            return false;
+        Order current_order = new Order(customer_name, persons, table_id);
+        Integer new_order_id = current_restaurant.createOrder(current_order);
+
+        if (new_order_id != -1) {
+            current_order.setTableStatus(true, sql_connection);
         }
+
+        return new_order_id;
     }
 
     // Adds a list of menu items to an order, and sets the status to `in order` (1).
     // Returns the number of successfully added menu items.
     public Integer addMenuToOrder(Integer order_id, ArrayList<Integer> menu_id) {
         if (!checkLoggedIn())
-            return;
+            return 0;
 
         // If the order ID is invalid (doesn't exist or not in the correct restaurant)
         if (!current_restaurant.orderInRestaurant(order_id)) {
@@ -258,13 +266,13 @@ public final class EmployeeAccount {
             return 0;
         }
 
-        Order current_order = new Order(order_id, sql_connection);
-        current_order.setOrderStatus(1);
+        Order current_order = Order.createFromID(order_id, sql_connection);
+        current_order.setOrderStatus(1, sql_connection);
 
         // Count successfully added menu items
         int success = 0;
         for (Integer m : menu_id) {
-            if (current_order.addMenu(m)) {
+            if (current_order.addMenu(m, sql_connection)) {
                 success++;
             }
         }
@@ -284,13 +292,13 @@ public final class EmployeeAccount {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return 0;
+            return;
         }
 
-        Order current_order = new Order(order_id, sql_connection);
-        current_order.setOrderStatus(2);
-        current_order.printBill();
-        current_order.setTableStatus(false);
+        Order current_order = Order.createFromID(order_id, sql_connection);
+        current_order.setOrderStatus(2, sql_connection);
+        current_order.printBill(sql_connection);
+        current_order.setTableStatus(false, sql_connection);
     }
 
 }
