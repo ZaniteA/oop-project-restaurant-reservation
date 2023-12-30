@@ -19,9 +19,6 @@ public class LocalMenu extends Menu {
         this.location = location;
         this.local_id = local_id;
     }
-<<<<<<< HEAD
-}
-=======
 
     // Constructor to create a new local menu without specifying the ID.
     public LocalMenu(String name, Double price, String lore, String location) {
@@ -83,4 +80,3 @@ public class LocalMenu extends Menu {
     }
 
 }
->>>>>>> 77cc9646ed8d7a76dcf96fb27958a342436d9bfb

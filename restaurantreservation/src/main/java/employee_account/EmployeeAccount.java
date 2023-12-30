@@ -3,6 +3,13 @@ package employee_account;
 import java.sql.*;
 import java.util.ArrayList;
 
+import menu.LocalMenu;
+import menu.SpecialMenu;
+import order.Order;
+import restaurant.LocalRestaurant;
+import restaurant.MainRestaurant;
+import restaurant.Restaurant;
+
 public final class EmployeeAccount {
 
     // Class that enables the user to interact with the database as an employee.
@@ -113,6 +120,7 @@ public final class EmployeeAccount {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     // Logs the user out, setting id, restaurant_id, and current_restaurant to NULL.
