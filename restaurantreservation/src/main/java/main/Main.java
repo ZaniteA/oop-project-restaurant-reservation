@@ -100,7 +100,10 @@ public class Main {
     private static void login() {
         System.out.println("Enter Employee ID:");
         int emp_id = readInteger("> ", "Invalid employee ID format", null, null);
-        emp_acc.login(emp_id);
+        
+        if(!emp_acc.login(emp_id)) {
+        	return;
+        }
 
         // Return to home menu
         sect = 1;
