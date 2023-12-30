@@ -28,7 +28,7 @@ public abstract class Restaurant {
 	private Boolean menuInRestaurant(int menu_id) {
 		try {
 			PreparedStatement menu_pst = sql_connection
-					.prepareStatement("select count(*) from RestaurantMenuMap where RestaurantID = ? and MenuID = ?");
+					.prepareStatement("select count(*) from MsMenu where RestaurantID = ? and MenuID = ?");
 			menu_pst.setInt(1, this.id);
 			menu_pst.setInt(2, menu_id);
 			ResultSet menu_rs = menu_pst.executeQuery();
@@ -53,7 +53,7 @@ public abstract class Restaurant {
 	private Boolean menuOrdered(int menu_id) {
 		try {
 			PreparedStatement menu_pst = sql_connection
-					.prepareStatement("select count(*) from OrderMenuMap where MenuID = ?");
+					.prepareStatement("select count(*) from OrderMenuTransaction where MenuID = ?");
 			menu_pst.setInt(1, menu_id);
 
 			ResultSet menu_rs = menu_pst.executeQuery();
@@ -110,7 +110,7 @@ public abstract class Restaurant {
 
 			// Insert the RegularID into MsMenu
 			PreparedStatement insert_menu = sql_connection.prepareStatement(
-					"insert into MsMenu (RegularID, SpecialID, LocalID, RestaurantID) values (?, NULL, NULL, ?");
+					"insert into MsMenu (RegularID, SpecialID, LocalID, RestaurantID) values (?, NULL, NULL, ?)");
 			insert_menu.setInt(1, regular_id);
 			insert_menu.setInt(2, this.id);
 

@@ -272,7 +272,6 @@ public class Main {
         System.out.println("Which data would you like to update?");
         System.out.println("1. Name");
         System.out.println("2. Price");
-        System.out.print("> ");
 
         int type = readInteger("> ", "Invalid input", 1, 2);
 

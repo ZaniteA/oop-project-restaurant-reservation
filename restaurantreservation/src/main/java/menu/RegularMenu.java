@@ -65,7 +65,7 @@ public class RegularMenu extends Menu {
     public void print() {
         System.out.printf("ID       : %d\n", super.id);
         System.out.printf("Name     : %s\n", super.name);
-        System.out.printf("Price    : Rp%.0lf\n", super.price);
+        System.out.printf("Price    : Rp%.0f\n", super.price);
     }
 
 }
