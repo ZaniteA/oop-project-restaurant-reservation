@@ -69,7 +69,7 @@ public class SpecialMenu extends Menu {
     public void print() {
         System.out.printf("ID       : %d\n", super.id);
         System.out.printf("Name     : %s\n", super.name);
-        System.out.printf("Price    : %.0f\n", super.price);
+        System.out.printf("Price    : Rp%.0lf\n", super.price);
         System.out.printf("Narration: %s\n", this.lore);
     }
 
