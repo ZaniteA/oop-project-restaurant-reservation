@@ -25,10 +25,10 @@ public abstract class Restaurant {
 	}
 
 	// Returns TRUE if the menu specified is in this restaurant.
-	private Boolean menuInRestaurant(int menu_id) {
+	public Boolean menuInRestaurant(int menu_id) {
 		try {
 			PreparedStatement menu_pst = sql_connection
-					.prepareStatement("select count(*) from RestaurantMenuMap where RestaurantID = ? and MenuID = ?");
+					.prepareStatement("select count(*) from MsMenu where RestaurantID = ? and MenuID = ?");
 			menu_pst.setInt(1, this.id);
 			menu_pst.setInt(2, menu_id);
 			ResultSet menu_rs = menu_pst.executeQuery();
@@ -50,10 +50,10 @@ public abstract class Restaurant {
 	}
 
 	// Returns TRUE if the menu specified has been ordered before.
-	private Boolean menuOrdered(int menu_id) {
+	public Boolean menuOrdered(int menu_id) {
 		try {
 			PreparedStatement menu_pst = sql_connection
-					.prepareStatement("select count(*) from OrderMenuMap where MenuID = ?");
+					.prepareStatement("select count(*) from OrderMenuTransaction where MenuID = ?");
 			menu_pst.setInt(1, menu_id);
 
 			ResultSet menu_rs = menu_pst.executeQuery();

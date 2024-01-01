@@ -34,7 +34,8 @@ public class LocalMenu extends Menu {
         try {
             Integer local_id = getLocalID(common_id, sql_connection);
 
-            PreparedStatement loc_pst = sql_connection.prepareStatement("select * from MsSpecialMenu where LocalID = ?");
+            PreparedStatement loc_pst = sql_connection
+                    .prepareStatement("select * from MsSpecialMenu where LocalID = ?");
             loc_pst.setInt(1, local_id);
             ResultSet loc_rs = loc_pst.executeQuery();
 
@@ -73,7 +74,8 @@ public class LocalMenu extends Menu {
     }
 
     // Gets the LocalID from the MenuID.
-    // Returns NULL if the LocalID is not found (i.e. the MenuID is invalid or the menu is not a local menu).
+    // Returns NULL if the LocalID is not found (i.e. the MenuID is invalid or the
+    // menu is not a local menu).
     public static Integer getLocalID(Integer common_id, Connection sql_connection) {
         try {
             PreparedStatement menu_pst = sql_connection.prepareStatement("select * from MsMenu where MenuID = ?");

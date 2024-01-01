@@ -244,13 +244,17 @@ public final class EmployeeAccount {
             return -1;
 
         Order current_order = new Order(customer_name, persons, table_id);
-        Integer new_order_id = current_restaurant.createOrder(current_order);
+        if (!current_order.verifyTables(sql_connection)) {
+            return -1;
+        }
+        current_order.id = current_restaurant.createOrder(current_order);
 
-        if (new_order_id != -1) {
+        if (current_order.id != -1) {
+            current_order.confirmTables(sql_connection);
             current_order.setTableStatus(true, sql_connection);
         }
 
-        return new_order_id;
+        return current_order.id;
     }
 
     // Adds a list of menu items to an order, and sets the status to `in order` (1).
@@ -261,24 +265,35 @@ public final class EmployeeAccount {
 
         // If the order ID is invalid (doesn't exist or not in the correct restaurant)
         if (!current_restaurant.orderInRestaurant(order_id)) {
-            try {
-                throw new Exception("Invalid order ID for the current restaurant");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            System.out.println("Invalid order ID for the current restaurant");
             return 0;
         }
 
         Order current_order = Order.createFromID(order_id, sql_connection);
-        current_order.setOrderStatus(1, sql_connection);
+
+        // If order has been finalized
+        if (current_order.status == 2) {
+            System.out.printf("Order with ID %d has already been finalized\n", order_id);
+            return 0;
+        }
 
         // Count successfully added menu items
         int success = 0;
         for (Integer m : menu_id) {
+            if (!current_restaurant.menuInRestaurant(m)) {
+                System.out.printf("Menu with ID %d does not exist in this restaurant\n", m);
+                continue;
+            }
             if (current_order.addMenu(m, sql_connection)) {
                 success++;
             }
         }
+
+        // If at least one menu item was added, change the status to `in order`
+        if (success > 0) {
+            current_order.setOrderStatus(1, sql_connection);
+        }
+
         return success;
     }
 
@@ -290,15 +305,19 @@ public final class EmployeeAccount {
 
         // If the order ID is invalid (doesn't exist or not in the correct restaurant)
         if (!current_restaurant.orderInRestaurant(order_id)) {
-            try {
-                throw new Exception("Invalid order ID for the current restaurant");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            System.out.println("Invalid order ID for the current restaurant");
             return;
         }
 
         Order current_order = Order.createFromID(order_id, sql_connection);
+        if (current_order.status == 0) {
+            System.out.println("No menu items ordered");
+            return;
+        } else if (current_order.status == 2) {
+            System.out.println("Order has already been finalized");
+            return;
+        }
+
         current_order.setOrderStatus(2, sql_connection);
         current_order.printBill(sql_connection);
         current_order.setTableStatus(false, sql_connection);

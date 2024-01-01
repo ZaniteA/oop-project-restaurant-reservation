@@ -30,8 +30,9 @@ public class SpecialMenu extends Menu {
     public static SpecialMenu createFromID(Integer common_id, Connection sql_connection) {
         try {
             Integer special_id = getSpecialID(common_id, sql_connection);
-            
-            PreparedStatement spec_pst = sql_connection.prepareStatement("select * from MsSpecialMenu where SpecialID = ?");
+
+            PreparedStatement spec_pst = sql_connection
+                    .prepareStatement("select * from MsSpecialMenu where SpecialID = ?");
             spec_pst.setInt(1, special_id);
             ResultSet spec_rs = spec_pst.executeQuery();
 
@@ -67,7 +68,8 @@ public class SpecialMenu extends Menu {
     }
 
     // Gets the SpecialID from the MenuID.
-    // Returns NULL if the SpecialID is not found (i.e. the MenuID is invalid or the menu is not a special menu).
+    // Returns NULL if the SpecialID is not found (i.e. the MenuID is invalid or the
+    // menu is not a special menu).
     public static Integer getSpecialID(Integer common_id, Connection sql_connection) {
         try {
             PreparedStatement menu_pst = sql_connection.prepareStatement("select * from MsMenu where MenuID = ?");

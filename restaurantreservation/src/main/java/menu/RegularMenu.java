@@ -28,7 +28,8 @@ public class RegularMenu extends Menu {
         try {
             Integer regular_id = getRegularID(common_id, sql_connection);
 
-            PreparedStatement reg_pst = sql_connection.prepareStatement("select * from MsRegularMenu where RegularID = ?");
+            PreparedStatement reg_pst = sql_connection
+                    .prepareStatement("select * from MsRegularMenu where RegularID = ?");
             reg_pst.setInt(1, regular_id);
             ResultSet reg_rs = reg_pst.executeQuery();
 
@@ -61,7 +62,8 @@ public class RegularMenu extends Menu {
     }
 
     // Gets the RegularID from the MenuID.
-    // Returns NULL if the RegularID is not found (i.e. the MenuID is invalid or the menu is not a regular menu).
+    // Returns NULL if the RegularID is not found (i.e. the MenuID is invalid or the
+    // menu is not a regular menu).
     public static Integer getRegularID(Integer common_id, Connection sql_connection) {
         try {
             PreparedStatement menu_pst = sql_connection.prepareStatement("select * from MsMenu where MenuID = ?");

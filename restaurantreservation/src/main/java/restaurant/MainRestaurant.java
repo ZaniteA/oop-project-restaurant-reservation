@@ -60,7 +60,7 @@ public class MainRestaurant extends Restaurant {
 			System.out.println("==================================================");
 			for (Integer i : special_id) {
 				SpecialMenu curr_menu = SpecialMenu.createFromID(i, sql_connection);
-				assert(curr_menu != null);
+				assert (curr_menu != null);
 				curr_menu.print();
 				System.out.println("==================================================");
 			}
