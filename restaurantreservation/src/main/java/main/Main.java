@@ -35,8 +35,15 @@ public class Main {
             user_input.nextLine();
             if (error) continue;
 
-            if (lo != null && hi != null) {
-                if (ret < lo || ret > hi) {
+            if (lo != null) {
+                if (ret < lo) {
+                    System.out.println(error_message);
+                    continue;
+                }
+            }
+
+            if (hi != null) {
+                if (ret > hi) {
                     System.out.println(error_message);
                     continue;
                 }
@@ -54,7 +61,7 @@ public class Main {
         while (true) {
             System.out.print(prompt);
 
-            double ret = 0;
+            double ret = 0.0;
             boolean error = false;
             try {
                 ret = user_input.nextDouble();
@@ -65,8 +72,15 @@ public class Main {
             user_input.nextLine();
             if (error) continue;
 
-            if (lo != null && hi != null) {
-                if (ret < lo || ret > hi) {
+            if (lo != null) {
+                if (ret < lo) {
+                    System.out.println(error_message);
+                    continue;
+                }
+            }
+
+            if (hi != null) {
+                if (ret > hi) {
                     System.out.println(error_message);
                     continue;
                 }

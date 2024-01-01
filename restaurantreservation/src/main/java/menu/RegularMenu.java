@@ -24,32 +24,24 @@ public class RegularMenu extends Menu {
 
     // Method to create a regular menu based on the database.
     // If the ID does not exist in the database, returns NULL.
-    public static RegularMenu createFromID(Integer id, Connection sql_connection) {
+    public static RegularMenu createFromID(Integer common_id, Connection sql_connection) {
         try {
-            PreparedStatement menu_pst = sql_connection.prepareStatement("select * from MsMenu where MenuID = ?");
-            menu_pst.setInt(1, id);
-            ResultSet menu_rs = menu_pst.executeQuery();
+            Integer regular_id = getRegularID(common_id, sql_connection);
+
+            PreparedStatement reg_pst = sql_connection.prepareStatement("select * from MsRegularMenu where RegularID = ?");
+            reg_pst.setInt(1, regular_id);
+            ResultSet reg_rs = reg_pst.executeQuery();
 
             String name = null;
             Double price = null;
-            Integer regular_id = null;
 
-            while (menu_rs.next()) {
-                regular_id = menu_rs.getInt("RegularID");
-
-                PreparedStatement reg_pst = sql_connection
-                        .prepareStatement("select * from MsRegularMenu where RegularID = ?");
-                reg_pst.setInt(1, regular_id);
-                ResultSet reg_rs = reg_pst.executeQuery();
-
-                while (reg_rs.next()) {
-                    name = reg_rs.getString("Name");
-                    price = reg_rs.getDouble("Price");
-                }
+            while (reg_rs.next()) {
+                name = reg_rs.getString("Name");
+                price = reg_rs.getDouble("Price");
             }
 
             if (name != null) {
-                return new RegularMenu(id, name, price, regular_id);
+                return new RegularMenu(common_id, name, price, regular_id);
             }
 
         } catch (Exception e) {
@@ -65,7 +57,33 @@ public class RegularMenu extends Menu {
     public void print() {
         System.out.printf("ID       : %d\n", super.id);
         System.out.printf("Name     : %s\n", super.name);
-        System.out.printf("Price    : Rp%.0lf\n", super.price);
+        System.out.printf("Price    : Rp%.0f\n", super.price);
+    }
+
+    // Gets the RegularID from the MenuID.
+    // Returns NULL if the RegularID is not found (i.e. the MenuID is invalid or the menu is not a regular menu).
+    public static Integer getRegularID(Integer common_id, Connection sql_connection) {
+        try {
+            PreparedStatement menu_pst = sql_connection.prepareStatement("select * from MsMenu where MenuID = ?");
+            menu_pst.setInt(1, common_id);
+            ResultSet menu_rs = menu_pst.executeQuery();
+
+            Integer regular_id = null;
+
+            while (menu_rs.next()) {
+                regular_id = menu_rs.getInt("RegularID");
+                if (regular_id != 0) {
+                    return regular_id;
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println("PreparedStatement failure");
+            e.printStackTrace();
+        }
+
+        // If no non-NULL values were encountered
+        return null;
     }
 
 }

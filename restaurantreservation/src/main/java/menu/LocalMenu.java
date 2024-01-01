@@ -30,36 +30,28 @@ public class LocalMenu extends Menu {
 
     // Method to create a local menu based on the database.
     // If the ID does not exist in the database, returns NULL.
-    public static LocalMenu createFromID(Integer id, Connection sql_connection) {
+    public static LocalMenu createFromID(Integer common_id, Connection sql_connection) {
         try {
-            PreparedStatement menu_pst = sql_connection.prepareStatement("select * from MsMenu where MenuID = ?");
-            menu_pst.setInt(1, id);
-            ResultSet menu_rs = menu_pst.executeQuery();
+            Integer local_id = getLocalID(common_id, sql_connection);
+
+            PreparedStatement loc_pst = sql_connection.prepareStatement("select * from MsSpecialMenu where LocalID = ?");
+            loc_pst.setInt(1, local_id);
+            ResultSet loc_rs = loc_pst.executeQuery();
 
             String name = null;
             Double price = null;
             String lore = null;
             String location = null;
-            Integer local_id = null;
 
-            while (menu_rs.next()) {
-                local_id = menu_rs.getInt("LocalID");
-
-                PreparedStatement reg_pst = sql_connection
-                        .prepareStatement("select * from MsSpecialMenu where LocalID = ?");
-                reg_pst.setInt(1, local_id);
-                ResultSet reg_rs = reg_pst.executeQuery();
-
-                while (reg_rs.next()) {
-                    name = reg_rs.getString("Name");
-                    price = reg_rs.getDouble("Price");
-                    lore = reg_rs.getString("Lore");
-                    location = reg_rs.getString("Location");
-                }
+            while (loc_rs.next()) {
+                name = loc_rs.getString("Name");
+                price = loc_rs.getDouble("Price");
+                lore = loc_rs.getString("Lore");
+                location = loc_rs.getString("Location");
             }
 
             if (name != null) {
-                return new LocalMenu(id, name, price, lore, location, local_id);
+                return new LocalMenu(common_id, name, price, lore, location, local_id);
             }
 
         } catch (Exception e) {
@@ -75,9 +67,35 @@ public class LocalMenu extends Menu {
     public void print() {
         System.out.printf("ID       : %d\n", super.id);
         System.out.printf("Name     : %s\n", super.name);
-        System.out.printf("Price    : Rp%.0lf\n", super.price);
+        System.out.printf("Price    : Rp%.0f\n", super.price);
         System.out.printf("Narration: %s\n", this.lore);
         System.out.printf("Origin   : %s\n", this.location);
+    }
+
+    // Gets the LocalID from the MenuID.
+    // Returns NULL if the LocalID is not found (i.e. the MenuID is invalid or the menu is not a local menu).
+    public static Integer getLocalID(Integer common_id, Connection sql_connection) {
+        try {
+            PreparedStatement menu_pst = sql_connection.prepareStatement("select * from MsMenu where MenuID = ?");
+            menu_pst.setInt(1, common_id);
+            ResultSet menu_rs = menu_pst.executeQuery();
+
+            Integer local_id = null;
+
+            while (menu_rs.next()) {
+                local_id = menu_rs.getInt("LocalID");
+                if (local_id != 0) {
+                    return local_id;
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println("PreparedStatement failure");
+            e.printStackTrace();
+        }
+
+        // If no non-NULL values were encountered
+        return null;
     }
 
 }

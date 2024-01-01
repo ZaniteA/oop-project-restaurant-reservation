@@ -110,7 +110,7 @@ public abstract class Restaurant {
 
 			// Insert the RegularID into MsMenu
 			PreparedStatement insert_menu = sql_connection.prepareStatement(
-					"insert into MsMenu (RegularID, SpecialID, LocalID, RestaurantID) values (?, NULL, NULL, ?");
+					"insert into MsMenu (RegularID, SpecialID, LocalID, RestaurantID) values (?, NULL, NULL, ?)");
 			insert_menu.setInt(1, regular_id);
 			insert_menu.setInt(2, this.id);
 

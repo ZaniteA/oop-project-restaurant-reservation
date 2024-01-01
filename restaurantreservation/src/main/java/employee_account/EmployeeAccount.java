@@ -35,7 +35,13 @@ public final class EmployeeAccount {
                 throw new Exception("Failed to connect to MySQL server");
             }
         } catch (Exception e) {
+            System.out.println("Failed to connect to MySQL server");
+            System.out.println("The server needs to be hosted on `localhost:3306/restaurantreservation`");
+            System.out.println("");
+            System.out.println("Detailed information:");
             e.printStackTrace();
+
+            System.exit(1);
         }
     }
 
@@ -71,10 +77,10 @@ public final class EmployeeAccount {
 
             while (restaurant_rs.next()) {
                 if (restaurant_rs.getInt("MainID") != 0) { // If not null
-                    MainRestaurant mr = new MainRestaurant(id, sql_connection);
+                    MainRestaurant mr = new MainRestaurant(restaurant_rs.getInt("MainID"), sql_connection);
                     current_restaurant = mr;
                 } else if (restaurant_rs.getInt("LocalID") != 0) { // If not null
-                    LocalRestaurant lr = new LocalRestaurant(id, sql_connection);
+                    LocalRestaurant lr = new LocalRestaurant(restaurant_rs.getInt("LocalID"), sql_connection);
                     current_restaurant = lr;
                 }
             }
