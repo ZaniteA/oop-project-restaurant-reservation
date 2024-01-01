@@ -17,7 +17,7 @@ public final class EmployeeAccount {
     // Implemented using the Singleton principle.
 
     // Singleton instance
-    private static final EmployeeAccount instance = getInstance();
+    private static final EmployeeAccount instance = new EmployeeAccount();
 
     private Integer id;
     private Integer restaurant_id;

@@ -25,16 +25,20 @@ public class Main {
             System.out.print(prompt);
 
             int ret = 0;
+            boolean error = false;
             try {
                 ret = user_input.nextInt();
             } catch (Exception e) {
                 System.out.println(error_message);
+                error = true;
             }
             user_input.nextLine();
+            if (error) continue;
 
             if (lo != null && hi != null) {
                 if (ret < lo || ret > hi) {
                     System.out.println(error_message);
+                    continue;
                 }
             }
 
@@ -51,16 +55,20 @@ public class Main {
             System.out.print(prompt);
 
             double ret = 0;
+            boolean error = false;
             try {
                 ret = user_input.nextDouble();
             } catch (Exception e) {
                 System.out.println(error_message);
+                error = true;
             }
             user_input.nextLine();
+            if (error) continue;
 
             if (lo != null && hi != null) {
                 if (ret < lo || ret > hi) {
                     System.out.println(error_message);
+                    continue;
                 }
             }
 
@@ -72,15 +80,15 @@ public class Main {
     private static void homeMenu() {
         System.out.printf("Hello %s, what would you like to do?\n", emp_acc.getName());
         System.out.println(" 1. View Order");
-        System.out.println(" 2. Add Reservasion");
+        System.out.println(" 2. Add Reservation");
         System.out.println(" 3. Add Menu to an Order");
         System.out.println(" 4. Finalize Order");
         System.out.println(" 5. View Menu");
         System.out.println(" 6. Insert Menu");
         System.out.println(" 7. Update Menu");
         System.out.println(" 8. Delete Menu");
-        System.out.println(" 9. Logout");
-        System.out.println("10. View Table");
+        System.out.println(" 9. View Table");
+        System.out.println("10. Logout");
         System.out.println(" 0. Exit");
 
         int resp = readInteger("> ", "Undefined menu section", 0, 10);
@@ -100,8 +108,9 @@ public class Main {
     private static void login() {
         System.out.println("Enter Employee ID:");
         int emp_id = readInteger("> ", "Invalid employee ID format", null, null);
-        
+
         if (!emp_acc.login(emp_id)) {
+            System.out.println("Login failed: invalid employee ID. Please try again");
         	return;
         }
 
