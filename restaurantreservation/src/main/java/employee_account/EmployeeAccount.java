@@ -29,7 +29,8 @@ public final class EmployeeAccount {
     private EmployeeAccount() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            this.sql_connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/restaurantreservation", "root","");
+            this.sql_connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/restaurantreservation",
+                    "root", "");
             if (this.sql_connection == null) {
                 throw new Exception("Failed to connect to MySQL server");
             }
