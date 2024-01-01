@@ -101,7 +101,7 @@ public class Main {
         System.out.println("Enter Employee ID:");
         int emp_id = readInteger("> ", "Invalid employee ID format", null, null);
         
-        if(!emp_acc.login(emp_id)) {
+        if (!emp_acc.login(emp_id)) {
         	return;
         }
 

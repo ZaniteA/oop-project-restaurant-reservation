@@ -17,21 +17,20 @@ public final class EmployeeAccount {
     // Implemented using the Singleton principle.
 
     // Singleton instance
-    private static EmployeeAccount instance;
+    private static final EmployeeAccount instance = getInstance();
 
-    private static Integer id;
-    private static Integer restaurant_id;
-    private static Restaurant current_restaurant;
-    private static Connection sql_connection;
-    private static String name;
+    private Integer id;
+    private Integer restaurant_id;
+    private Restaurant current_restaurant;
+    private Connection sql_connection;
+    private String name;
 
     // Hide the constructor, as the class is a singleton
     private EmployeeAccount() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/restaurantreservation", "root",
-                    "");
-            if (conn == null) {
+            this.sql_connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/restaurantreservation", "root","");
+            if (this.sql_connection == null) {
                 throw new Exception("Failed to connect to MySQL server");
             }
         } catch (Exception e) {
@@ -41,9 +40,6 @@ public final class EmployeeAccount {
 
     // Method to get the single instance of EmployeeAccount
     public static EmployeeAccount getInstance() {
-        if (instance == null) {
-            instance = new EmployeeAccount();
-        }
         return instance;
     }
 
@@ -51,7 +47,7 @@ public final class EmployeeAccount {
 
     // Checks if the user is logged in.
     // If not, throws an error.
-    private static Boolean checkLoggedIn() {
+    private Boolean checkLoggedIn() {
         if (id == null) {
             try {
                 throw new Exception("User is not logged in");
@@ -64,7 +60,7 @@ public final class EmployeeAccount {
     }
 
     // Returns the restaurant instance from its ID.
-    private static void getRestaurantInstance() {
+    private void getRestaurantInstance() {
         try {
             // Get the restaurant type and create the appropriate subclass
             PreparedStatement restaurant_pst = sql_connection
