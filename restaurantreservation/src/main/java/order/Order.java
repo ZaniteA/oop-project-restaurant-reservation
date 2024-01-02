@@ -74,12 +74,12 @@ public class Order {
 
                 ArrayList<Integer> menu_id = new ArrayList<Integer>();
                 PreparedStatement menu_pst = sql_connection
-                        .prepareStatement("select * from OrderMenuMap where OrderId = ?");
+                        .prepareStatement("select * from OrderMenuTransaction where OrderId = ?");
                 menu_pst.setInt(1, id);
                 ResultSet menu_rs = menu_pst.executeQuery();
 
                 while (menu_rs.next()) {
-                    menu_id.add(menu_rs.getInt("TableID"));
+                    menu_id.add(menu_rs.getInt("MenuID"));
                 }
 
                 return new Order(id, customer_name, persons, status, table_id, menu_id);
@@ -133,6 +133,28 @@ public class Order {
             return false;
         } else {
             return true;
+        }
+    }
+
+    // Confirms that the tables in the ArrayList are to be used in this order, i.e.
+    // inserts the tables in the order into OrderTableMap.
+    public void confirmTables(Connection sql_connection) {
+        try {
+            for (Integer t : table_id) {
+                PreparedStatement ot_pst = sql_connection
+                        .prepareStatement("insert into OrderTableMap (OrderID, TableID) values (?, ?)");
+                ot_pst.setInt(1, id);
+                ot_pst.setInt(2, t);
+
+                // This variable checks if the row was inserted correctly
+                int check = ot_pst.executeUpdate();
+                if (check == 0) {
+                    throw new Exception("OrderTableMap table insertion failed");
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("PreparedStatement failure");
+            e.printStackTrace();
         }
     }
 
@@ -201,7 +223,7 @@ public class Order {
         menu_id.add(new_menu_id);
         try {
             PreparedStatement status_pst = sql_connection
-                    .prepareStatement("insert into OrderMenuMap values (?, ?)");
+                    .prepareStatement("insert into OrderMenuTransaction (MenuID, OrderID) values (?, ?)");
             status_pst.setInt(1, new_menu_id);
             status_pst.setInt(2, id);
 
@@ -259,12 +281,12 @@ public class Order {
                     table_pst_2.setInt(1, cur_menu_id);
                     ResultSet table_rs_2 = table_pst_2.executeQuery();
 
-                    Integer cur_regular_id = table_rs_2.getInt("RegularID");
-                    Integer cur_special_id = table_rs_2.getInt("SpecialID");
-                    Integer cur_local_id = table_rs_2.getInt("LocalID");
-
                     // Get menuName and menuPrice from the third query
                     while (table_rs_2.next()) {
+                        Integer cur_regular_id = table_rs_2.getInt("RegularID");
+                        Integer cur_special_id = table_rs_2.getInt("SpecialID");
+                        Integer cur_local_id = table_rs_2.getInt("LocalID");
+
                         PreparedStatement table_pst_3 = null;
 
                         if (cur_regular_id != 0) {
@@ -274,12 +296,12 @@ public class Order {
 
                         } else if (cur_special_id != 0) {
                             table_pst_3 = sql_connection
-                                    .prepareStatement("select * from MsRegularMenu where SpecialID = ?");
+                                    .prepareStatement("select * from MsSpecialMenu where SpecialID = ?");
                             table_pst_3.setInt(1, cur_special_id);
 
                         } else if (cur_local_id != 0) {
                             table_pst_3 = sql_connection
-                                    .prepareStatement("select * from MsRegularMenu where LocalID = ?");
+                                    .prepareStatement("select * from MsLocalMenu where LocalID = ?");
                             table_pst_3.setInt(1, cur_local_id);
 
                         } else {
@@ -305,9 +327,9 @@ public class Order {
 
         // Print the lists and total price
         for (int i = 0; i < menu_name_list.size(); i++) {
-            System.out.printf("%s: Rp %.0lf\n", menu_name_list.get(i), price_list.get(i));
+            System.out.printf("%s: Rp%.0f\n", menu_name_list.get(i), price_list.get(i));
             total_price += price_list.get(i);
         }
-        System.out.printf("Total Price: Rp %.0lf\n", total_price);
+        System.out.printf("Total Price: Rp%.0f\n", total_price);
     }
 }

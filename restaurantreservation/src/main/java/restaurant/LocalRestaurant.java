@@ -23,7 +23,7 @@ public class LocalRestaurant extends Restaurant {
 		try {
 			// Filter the menu items into regular and local
 			PreparedStatement menu_pst = sql_connection
-					.prepareStatement("select MenuID, RegularID, LocalID from MsMenu where RestaurantID = ?");
+					.prepareStatement("select * from MsMenu where RestaurantID = ?");
 			menu_pst.setInt(1, this.id);
 			ResultSet menu_rs = menu_pst.executeQuery();
 
@@ -32,7 +32,7 @@ public class LocalRestaurant extends Restaurant {
 			int curr_id = 0, curr_reg = 0, curr_local = 0;
 
 			while (menu_rs.next()) {
-				curr_id = menu_rs.getInt("Menu_ID");
+				curr_id = menu_rs.getInt("MenuID");
 				curr_reg = menu_rs.getInt("RegularID");
 				curr_local = menu_rs.getInt("LocalID");
 
@@ -57,11 +57,11 @@ public class LocalRestaurant extends Restaurant {
 
 			// Print local menu
 			System.out.println("Local Menu");
-			System.out.println("==============================================");
+			System.out.println("==================================================");
 			for (Integer i : local_id) {
 				LocalMenu curr_menu = LocalMenu.createFromID(i, sql_connection);
 				curr_menu.print();
-				System.out.println("==============================================");
+				System.out.println("==================================================");
 			}
 			System.out.println();
 
@@ -108,7 +108,7 @@ public class LocalRestaurant extends Restaurant {
 
 			// Insert the LocalID into MsMenu
 			PreparedStatement insert_menu = sql_connection.prepareStatement(
-					"insert into MsMenu (RegularID, SpecialID, LocalID, RestaurantID) values (NULL, NULL, ?, ?");
+					"insert into MsMenu (RegularID, SpecialID, LocalID, RestaurantID) values (NULL, NULL, ?, ?)");
 			insert_menu.setInt(1, local_id);
 			insert_menu.setInt(2, this.id);
 

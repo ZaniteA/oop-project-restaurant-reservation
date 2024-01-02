@@ -2,8 +2,8 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: Dec 29, 2023 at 01:34 PM
+-- Host: 127.0.0.1
+-- Generation Time: Jan 01, 2024 at 12:36 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -24,20 +24,20 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `MsEmployee`
+-- Table structure for table `msemployee`
 --
 
-CREATE TABLE `MsEmployee` (
+CREATE TABLE `msemployee` (
   `EmployeeID` int(11) NOT NULL,
   `Name` varchar(50) NOT NULL,
   `RestaurantID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `MsEmployee`
+-- Dumping data for table `msemployee`
 --
 
-INSERT INTO `MsEmployee` (`EmployeeID`, `Name`, `RestaurantID`) VALUES
+INSERT INTO `msemployee` (`EmployeeID`, `Name`, `RestaurantID`) VALUES
 (91, 'Alice', 1),
 (92, 'Bob', 2),
 (93, 'Charlie', 3),
@@ -72,10 +72,10 @@ INSERT INTO `MsEmployee` (`EmployeeID`, `Name`, `RestaurantID`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `MsLocalMenu`
+-- Table structure for table `mslocalmenu`
 --
 
-CREATE TABLE `MsLocalMenu` (
+CREATE TABLE `mslocalmenu` (
   `LocalID` int(11) NOT NULL,
   `Name` varchar(50) NOT NULL,
   `Price` double NOT NULL,
@@ -84,10 +84,10 @@ CREATE TABLE `MsLocalMenu` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `MsLocalMenu`
+-- Dumping data for table `mslocalmenu`
 --
 
-INSERT INTO `MsLocalMenu` (`LocalID`, `Name`, `Price`, `Location`, `Lore`) VALUES
+INSERT INTO `mslocalmenu` (`LocalID`, `Name`, `Price`, `Location`, `Lore`) VALUES
 (1, 'Rendang Juara', 65000, 'Padang Pusat', 'Rendang ini adalah mahakarya masakan Padang, dengan daging yang empuk dan bumbu rendang yang meresap hingga ke tulang dari Padang Pusat.'),
 (2, 'Petai Balado Berani', 50000, 'Padang Barat', 'Petai Balado ini adalah paduan sempurna rasa pedas dan petai yang khas, menciptakan ledakan rasa di lidah dari Padang Barat.'),
 (3, 'Ikan Bakar Kelapa Pariaman', 60000, 'Padang Timur', 'Ikan bakar ini diberi sentuhan khusus dengan kelapa dari Pariaman, memberikan aroma khas dan rasa yang lezat dari Padang Timur.'),
@@ -104,19 +104,19 @@ INSERT INTO `MsLocalMenu` (`LocalID`, `Name`, `Price`, `Location`, `Lore`) VALUE
 -- --------------------------------------------------------
 
 --
--- Table structure for table `MsLocalRestaurant`
+-- Table structure for table `mslocalrestaurant`
 --
 
-CREATE TABLE `MsLocalRestaurant` (
+CREATE TABLE `mslocalrestaurant` (
   `LocalID` int(11) NOT NULL,
   `Name` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `MsLocalRestaurant`
+-- Dumping data for table `mslocalrestaurant`
 --
 
-INSERT INTO `MsLocalRestaurant` (`LocalID`, `Name`) VALUES
+INSERT INTO `mslocalrestaurant` (`LocalID`, `Name`) VALUES
 (1, 'Padang'),
 (2, 'Samarinda'),
 (3, 'Surabaya');
@@ -124,19 +124,19 @@ INSERT INTO `MsLocalRestaurant` (`LocalID`, `Name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `MsMainRestaurant`
+-- Table structure for table `msmainrestaurant`
 --
 
-CREATE TABLE `MsMainRestaurant` (
+CREATE TABLE `msmainrestaurant` (
   `MainID` int(11) NOT NULL,
   `Name` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `MsMainRestaurant`
+-- Dumping data for table `msmainrestaurant`
 --
 
-INSERT INTO `MsMainRestaurant` (`MainID`, `Name`) VALUES
+INSERT INTO `msmainrestaurant` (`MainID`, `Name`) VALUES
 (1, 'Bali'),
 (2, 'Bandung'),
 (3, 'Jakarta');
@@ -144,10 +144,10 @@ INSERT INTO `MsMainRestaurant` (`MainID`, `Name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `MsMenu`
+-- Table structure for table `msmenu`
 --
 
-CREATE TABLE `MsMenu` (
+CREATE TABLE `msmenu` (
   `MenuID` int(11) NOT NULL,
   `RegularID` int(11) DEFAULT NULL,
   `SpecialID` int(11) DEFAULT NULL,
@@ -156,10 +156,10 @@ CREATE TABLE `MsMenu` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `MsMenu`
+-- Dumping data for table `msmenu`
 --
 
-INSERT INTO `MsMenu` (`MenuID`, `RegularID`, `SpecialID`, `LocalID`, `RestaurantID`) VALUES
+INSERT INTO `msmenu` (`MenuID`, `RegularID`, `SpecialID`, `LocalID`, `RestaurantID`) VALUES
 (1, 1, NULL, NULL, 1),
 (2, 2, NULL, NULL, 2),
 (3, 3, NULL, NULL, 3),
@@ -200,10 +200,10 @@ INSERT INTO `MsMenu` (`MenuID`, `RegularID`, `SpecialID`, `LocalID`, `Restaurant
 -- --------------------------------------------------------
 
 --
--- Table structure for table `MsOrder`
+-- Table structure for table `msorder`
 --
 
-CREATE TABLE `MsOrder` (
+CREATE TABLE `msorder` (
   `OrderID` int(11) NOT NULL,
   `CustomerName` varchar(50) NOT NULL,
   `Persons` int(11) NOT NULL,
@@ -213,20 +213,20 @@ CREATE TABLE `MsOrder` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `MsRegularMenu`
+-- Table structure for table `msregularmenu`
 --
 
-CREATE TABLE `MsRegularMenu` (
+CREATE TABLE `msregularmenu` (
   `RegularID` int(11) NOT NULL,
   `Name` varchar(50) NOT NULL,
   `Price` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `MsRegularMenu`
+-- Dumping data for table `msregularmenu`
 --
 
-INSERT INTO `MsRegularMenu` (`RegularID`, `Name`, `Price`) VALUES
+INSERT INTO `msregularmenu` (`RegularID`, `Name`, `Price`) VALUES
 (1, 'Nasi Goreng Jumbo', 35000),
 (2, 'Ayam Bakar Taliwang', 45000),
 (3, 'Mie Goreng Seafood', 40000),
@@ -243,20 +243,20 @@ INSERT INTO `MsRegularMenu` (`RegularID`, `Name`, `Price`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `MsRestaurant`
+-- Table structure for table `msrestaurant`
 --
 
-CREATE TABLE `MsRestaurant` (
+CREATE TABLE `msrestaurant` (
   `RestaurantID` int(11) NOT NULL,
   `MainID` int(11) DEFAULT NULL,
   `LocalID` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `MsRestaurant`
+-- Dumping data for table `msrestaurant`
 --
 
-INSERT INTO `MsRestaurant` (`RestaurantID`, `MainID`, `LocalID`) VALUES
+INSERT INTO `msrestaurant` (`RestaurantID`, `MainID`, `LocalID`) VALUES
 (1, 1, NULL),
 (2, 2, NULL),
 (3, 3, NULL),
@@ -267,10 +267,10 @@ INSERT INTO `MsRestaurant` (`RestaurantID`, `MainID`, `LocalID`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `MsSpecialMenu`
+-- Table structure for table `msspecialmenu`
 --
 
-CREATE TABLE `MsSpecialMenu` (
+CREATE TABLE `msspecialmenu` (
   `SpecialID` int(11) NOT NULL,
   `Name` varchar(50) NOT NULL,
   `Price` double NOT NULL,
@@ -278,10 +278,10 @@ CREATE TABLE `MsSpecialMenu` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `MsSpecialMenu`
+-- Dumping data for table `msspecialmenu`
 --
 
-INSERT INTO `MsSpecialMenu` (`SpecialID`, `Name`, `Price`, `Lore`) VALUES
+INSERT INTO `msspecialmenu` (`SpecialID`, `Name`, `Price`, `Lore`) VALUES
 (1, 'Raja Lautan Abadi', 75000, 'Hidangan istimewa terinspirasi perjalanan laut pelaut legendaris, cita rasa laut menciptakan perjalanan tak terlupakan melintasi samudra.'),
 (2, 'Sihir Taliwang', 65000, 'Dibalut bumbu rahasia nenek moyang, Ayam Taliwang membawa kesan magis dari pulau eksotis. Keajaiban cita rasa dan kenangan abadi dari Tanah Sumbawa.'),
 (3, 'Mie Legenda Ratu', 55000, 'Hidangan kesukaan ratu zaman dulu, keanggunan rasa dan kehalusan tekstur menciptakan perjalanan ke dunia kuliner yang diwarnai oleh elegansi dan kelembutan.'),
@@ -298,20 +298,20 @@ INSERT INTO `MsSpecialMenu` (`SpecialID`, `Name`, `Price`, `Lore`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `MsTable`
+-- Table structure for table `mstable`
 --
 
-CREATE TABLE `MsTable` (
+CREATE TABLE `mstable` (
   `TableID` int(11) NOT NULL,
   `Capacity` int(11) NOT NULL,
   `Taken` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `MsTable`
+-- Dumping data for table `mstable`
 --
 
-INSERT INTO `MsTable` (`TableID`, `Capacity`, `Taken`) VALUES
+INSERT INTO `mstable` (`TableID`, `Capacity`, `Taken`) VALUES
 (1, 2, 0),
 (2, 4, 0),
 (3, 10, 0),
@@ -352,10 +352,10 @@ INSERT INTO `MsTable` (`TableID`, `Capacity`, `Taken`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `OrderMenuTransaction`
+-- Table structure for table `ordermenutransaction`
 --
 
-CREATE TABLE `OrderMenuTransaction` (
+CREATE TABLE `ordermenutransaction` (
   `TransactionID` int(11) NOT NULL,
   `MenuID` int(11) NOT NULL,
   `OrderID` int(11) NOT NULL
@@ -364,10 +364,10 @@ CREATE TABLE `OrderMenuTransaction` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `OrderTableMap`
+-- Table structure for table `ordertablemap`
 --
 
-CREATE TABLE `OrderTableMap` (
+CREATE TABLE `ordertablemap` (
   `OrderID` int(11) NOT NULL,
   `TableID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -375,10 +375,10 @@ CREATE TABLE `OrderTableMap` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `RestaurantOrderMap`
+-- Table structure for table `restaurantordermap`
 --
 
-CREATE TABLE `RestaurantOrderMap` (
+CREATE TABLE `restaurantordermap` (
   `RestaurantID` int(11) NOT NULL,
   `OrderID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -386,19 +386,19 @@ CREATE TABLE `RestaurantOrderMap` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `RestaurantTableMap`
+-- Table structure for table `restauranttablemap`
 --
 
-CREATE TABLE `RestaurantTableMap` (
+CREATE TABLE `restauranttablemap` (
   `RestaurantID` int(11) NOT NULL,
   `TableID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `RestaurantTableMap`
+-- Dumping data for table `restauranttablemap`
 --
 
-INSERT INTO `RestaurantTableMap` (`RestaurantID`, `TableID`) VALUES
+INSERT INTO `restauranttablemap` (`RestaurantID`, `TableID`) VALUES
 (1, 1),
 (1, 2),
 (1, 3),
@@ -441,97 +441,97 @@ INSERT INTO `RestaurantTableMap` (`RestaurantID`, `TableID`) VALUES
 --
 
 --
--- Indexes for table `MsEmployee`
+-- Indexes for table `msemployee`
 --
-ALTER TABLE `MsEmployee`
+ALTER TABLE `msemployee`
   ADD PRIMARY KEY (`EmployeeID`),
   ADD KEY `ConnectorMsEmployee-MsRestaurant` (`RestaurantID`);
 
 --
--- Indexes for table `MsLocalMenu`
+-- Indexes for table `mslocalmenu`
 --
-ALTER TABLE `MsLocalMenu`
+ALTER TABLE `mslocalmenu`
   ADD PRIMARY KEY (`LocalID`);
 
 --
--- Indexes for table `MsLocalRestaurant`
+-- Indexes for table `mslocalrestaurant`
 --
-ALTER TABLE `MsLocalRestaurant`
+ALTER TABLE `mslocalrestaurant`
   ADD PRIMARY KEY (`LocalID`);
 
 --
--- Indexes for table `MsMainRestaurant`
+-- Indexes for table `msmainrestaurant`
 --
-ALTER TABLE `MsMainRestaurant`
+ALTER TABLE `msmainrestaurant`
   ADD PRIMARY KEY (`MainID`);
 
 --
--- Indexes for table `MsMenu`
+-- Indexes for table `msmenu`
 --
-ALTER TABLE `MsMenu`
+ALTER TABLE `msmenu`
   ADD PRIMARY KEY (`MenuID`),
   ADD UNIQUE KEY `RegularID` (`RegularID`),
   ADD UNIQUE KEY `SpecialID` (`SpecialID`),
   ADD UNIQUE KEY `LocalID` (`LocalID`);
 
 --
--- Indexes for table `MsOrder`
+-- Indexes for table `msorder`
 --
-ALTER TABLE `MsOrder`
+ALTER TABLE `msorder`
   ADD PRIMARY KEY (`OrderID`);
 
 --
--- Indexes for table `MsRegularMenu`
+-- Indexes for table `msregularmenu`
 --
-ALTER TABLE `MsRegularMenu`
+ALTER TABLE `msregularmenu`
   ADD PRIMARY KEY (`RegularID`);
 
 --
--- Indexes for table `MsRestaurant`
+-- Indexes for table `msrestaurant`
 --
-ALTER TABLE `MsRestaurant`
+ALTER TABLE `msrestaurant`
   ADD PRIMARY KEY (`RestaurantID`),
   ADD UNIQUE KEY `MainID` (`MainID`),
   ADD UNIQUE KEY `LocalID` (`LocalID`);
 
 --
--- Indexes for table `MsSpecialMenu`
+-- Indexes for table `msspecialmenu`
 --
-ALTER TABLE `MsSpecialMenu`
+ALTER TABLE `msspecialmenu`
   ADD PRIMARY KEY (`SpecialID`);
 
 --
--- Indexes for table `MsTable`
+-- Indexes for table `mstable`
 --
-ALTER TABLE `MsTable`
+ALTER TABLE `mstable`
   ADD PRIMARY KEY (`TableID`);
 
 --
--- Indexes for table `OrderMenuTransaction`
+-- Indexes for table `ordermenutransaction`
 --
-ALTER TABLE `OrderMenuTransaction`
+ALTER TABLE `ordermenutransaction`
   ADD PRIMARY KEY (`TransactionID`),
   ADD KEY `ConnectorOrderMenuTransaction-MsMenu` (`MenuID`),
   ADD KEY `ConnectorOrderMenuTransaction-MsOrder` (`OrderID`);
 
 --
--- Indexes for table `OrderTableMap`
+-- Indexes for table `ordertablemap`
 --
-ALTER TABLE `OrderTableMap`
+ALTER TABLE `ordertablemap`
   ADD PRIMARY KEY (`OrderID`,`TableID`),
   ADD KEY `ConnectorOrderTableMap-MsTable` (`TableID`);
 
 --
--- Indexes for table `RestaurantOrderMap`
+-- Indexes for table `restaurantordermap`
 --
-ALTER TABLE `RestaurantOrderMap`
+ALTER TABLE `restaurantordermap`
   ADD PRIMARY KEY (`RestaurantID`,`OrderID`) USING BTREE,
   ADD KEY `ConnectorRestaurantOrderMap-MsOrder` (`OrderID`);
 
 --
--- Indexes for table `RestaurantTableMap`
+-- Indexes for table `restauranttablemap`
 --
-ALTER TABLE `RestaurantTableMap`
+ALTER TABLE `restauranttablemap`
   ADD PRIMARY KEY (`RestaurantID`,`TableID`),
   ADD KEY `ConnectorRestaurantTableMap-MsTable` (`TableID`);
 
@@ -540,69 +540,69 @@ ALTER TABLE `RestaurantTableMap`
 --
 
 --
--- AUTO_INCREMENT for table `MsEmployee`
+-- AUTO_INCREMENT for table `msemployee`
 --
-ALTER TABLE `MsEmployee`
+ALTER TABLE `msemployee`
   MODIFY `EmployeeID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=121;
 
 --
--- AUTO_INCREMENT for table `MsLocalMenu`
+-- AUTO_INCREMENT for table `mslocalmenu`
 --
-ALTER TABLE `MsLocalMenu`
+ALTER TABLE `mslocalmenu`
   MODIFY `LocalID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
--- AUTO_INCREMENT for table `MsLocalRestaurant`
+-- AUTO_INCREMENT for table `mslocalrestaurant`
 --
-ALTER TABLE `MsLocalRestaurant`
+ALTER TABLE `mslocalrestaurant`
   MODIFY `LocalID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT for table `MsMainRestaurant`
+-- AUTO_INCREMENT for table `msmainrestaurant`
 --
-ALTER TABLE `MsMainRestaurant`
+ALTER TABLE `msmainrestaurant`
   MODIFY `MainID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT for table `MsMenu`
+-- AUTO_INCREMENT for table `msmenu`
 --
-ALTER TABLE `MsMenu`
+ALTER TABLE `msmenu`
   MODIFY `MenuID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
--- AUTO_INCREMENT for table `MsOrder`
+-- AUTO_INCREMENT for table `msorder`
 --
-ALTER TABLE `MsOrder`
+ALTER TABLE `msorder`
   MODIFY `OrderID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `MsRegularMenu`
+-- AUTO_INCREMENT for table `msregularmenu`
 --
-ALTER TABLE `MsRegularMenu`
+ALTER TABLE `msregularmenu`
   MODIFY `RegularID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
--- AUTO_INCREMENT for table `MsRestaurant`
+-- AUTO_INCREMENT for table `msrestaurant`
 --
-ALTER TABLE `MsRestaurant`
+ALTER TABLE `msrestaurant`
   MODIFY `RestaurantID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT for table `MsSpecialMenu`
+-- AUTO_INCREMENT for table `msspecialmenu`
 --
-ALTER TABLE `MsSpecialMenu`
+ALTER TABLE `msspecialmenu`
   MODIFY `SpecialID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
--- AUTO_INCREMENT for table `MsTable`
+-- AUTO_INCREMENT for table `mstable`
 --
-ALTER TABLE `MsTable`
+ALTER TABLE `mstable`
   MODIFY `TableID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
 
 --
--- AUTO_INCREMENT for table `OrderMenuTransaction`
+-- AUTO_INCREMENT for table `ordermenutransaction`
 --
-ALTER TABLE `OrderMenuTransaction`
+ALTER TABLE `ordermenutransaction`
   MODIFY `TransactionID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -610,53 +610,53 @@ ALTER TABLE `OrderMenuTransaction`
 --
 
 --
--- Constraints for table `MsEmployee`
+-- Constraints for table `msemployee`
 --
-ALTER TABLE `MsEmployee`
-  ADD CONSTRAINT `ConnectorMsEmployee-MsRestaurant` FOREIGN KEY (`RestaurantID`) REFERENCES `MsRestaurant` (`RestaurantID`);
+ALTER TABLE `msemployee`
+  ADD CONSTRAINT `ConnectorMsEmployee-MsRestaurant` FOREIGN KEY (`RestaurantID`) REFERENCES `msrestaurant` (`RestaurantID`);
 
 --
--- Constraints for table `MsMenu`
+-- Constraints for table `msmenu`
 --
-ALTER TABLE `MsMenu`
-  ADD CONSTRAINT `ConnectorMsMenu-MsLocalMenu` FOREIGN KEY (`LocalID`) REFERENCES `MsLocalMenu` (`LocalID`),
-  ADD CONSTRAINT `ConnectorMsMenu-MsRegularMenu` FOREIGN KEY (`RegularID`) REFERENCES `MsRegularMenu` (`RegularID`),
-  ADD CONSTRAINT `ConnectorMsMenu-MsSpecialMenu` FOREIGN KEY (`SpecialID`) REFERENCES `MsSpecialMenu` (`SpecialID`);
+ALTER TABLE `msmenu`
+  ADD CONSTRAINT `ConnectorMsMenu-MsLocalMenu` FOREIGN KEY (`LocalID`) REFERENCES `mslocalmenu` (`LocalID`) ON DELETE CASCADE,
+  ADD CONSTRAINT `ConnectorMsMenu-MsRegularMenu` FOREIGN KEY (`RegularID`) REFERENCES `msregularmenu` (`RegularID`) ON DELETE CASCADE,
+  ADD CONSTRAINT `ConnectorMsMenu-MsSpecialMenu` FOREIGN KEY (`SpecialID`) REFERENCES `msspecialmenu` (`SpecialID`) ON DELETE CASCADE;
 
 --
--- Constraints for table `MsRestaurant`
+-- Constraints for table `msrestaurant`
 --
-ALTER TABLE `MsRestaurant`
-  ADD CONSTRAINT `ConnectorMsRestaurant-MsLocalRestaurant` FOREIGN KEY (`LocalID`) REFERENCES `MsLocalRestaurant` (`LocalID`),
-  ADD CONSTRAINT `ConnectorMsRestaurant-MsMainRestaurant` FOREIGN KEY (`MainID`) REFERENCES `MsMainRestaurant` (`MainID`);
+ALTER TABLE `msrestaurant`
+  ADD CONSTRAINT `ConnectorMsRestaurant-MsLocalRestaurant` FOREIGN KEY (`LocalID`) REFERENCES `mslocalrestaurant` (`LocalID`),
+  ADD CONSTRAINT `ConnectorMsRestaurant-MsMainRestaurant` FOREIGN KEY (`MainID`) REFERENCES `msmainrestaurant` (`MainID`);
 
 --
--- Constraints for table `OrderMenuTransaction`
+-- Constraints for table `ordermenutransaction`
 --
-ALTER TABLE `OrderMenuTransaction`
-  ADD CONSTRAINT `ConnectorOrderMenuTransaction-MsMenu` FOREIGN KEY (`MenuID`) REFERENCES `MsMenu` (`MenuID`),
-  ADD CONSTRAINT `ConnectorOrderMenuTransaction-MsOrder` FOREIGN KEY (`OrderID`) REFERENCES `MsOrder` (`OrderID`);
+ALTER TABLE `ordermenutransaction`
+  ADD CONSTRAINT `ConnectorOrderMenuTransaction-MsMenu` FOREIGN KEY (`MenuID`) REFERENCES `msmenu` (`MenuID`),
+  ADD CONSTRAINT `ConnectorOrderMenuTransaction-MsOrder` FOREIGN KEY (`OrderID`) REFERENCES `msorder` (`OrderID`);
 
 --
--- Constraints for table `OrderTableMap`
+-- Constraints for table `ordertablemap`
 --
-ALTER TABLE `OrderTableMap`
-  ADD CONSTRAINT `ConnectorOrderTableMap-MsOrder` FOREIGN KEY (`OrderID`) REFERENCES `MsOrder` (`OrderID`),
-  ADD CONSTRAINT `ConnectorOrderTableMap-MsTable` FOREIGN KEY (`TableID`) REFERENCES `MsTable` (`TableID`);
+ALTER TABLE `ordertablemap`
+  ADD CONSTRAINT `ConnectorOrderTableMap-MsOrder` FOREIGN KEY (`OrderID`) REFERENCES `msorder` (`OrderID`),
+  ADD CONSTRAINT `ConnectorOrderTableMap-MsTable` FOREIGN KEY (`TableID`) REFERENCES `mstable` (`TableID`);
 
 --
--- Constraints for table `RestaurantOrderMap`
+-- Constraints for table `restaurantordermap`
 --
-ALTER TABLE `RestaurantOrderMap`
-  ADD CONSTRAINT `ConnectorRestaurantOrderMap-MsOrder` FOREIGN KEY (`OrderID`) REFERENCES `MsOrder` (`OrderID`),
-  ADD CONSTRAINT `ConnectorRestaurantOrderMap-MsRestaurant` FOREIGN KEY (`RestaurantID`) REFERENCES `MsRestaurant` (`RestaurantID`);
+ALTER TABLE `restaurantordermap`
+  ADD CONSTRAINT `ConnectorRestaurantOrderMap-MsOrder` FOREIGN KEY (`OrderID`) REFERENCES `msorder` (`OrderID`),
+  ADD CONSTRAINT `ConnectorRestaurantOrderMap-MsRestaurant` FOREIGN KEY (`RestaurantID`) REFERENCES `msrestaurant` (`RestaurantID`);
 
 --
--- Constraints for table `RestaurantTableMap`
+-- Constraints for table `restauranttablemap`
 --
-ALTER TABLE `RestaurantTableMap`
-  ADD CONSTRAINT `ConnectorRestaurantTableMap-MsRestaurant` FOREIGN KEY (`RestaurantID`) REFERENCES `MsRestaurant` (`RestaurantID`),
-  ADD CONSTRAINT `ConnectorRestaurantTableMap-MsTable` FOREIGN KEY (`TableID`) REFERENCES `MsTable` (`TableID`);
+ALTER TABLE `restauranttablemap`
+  ADD CONSTRAINT `ConnectorRestaurantTableMap-MsRestaurant` FOREIGN KEY (`RestaurantID`) REFERENCES `msrestaurant` (`RestaurantID`),
+  ADD CONSTRAINT `ConnectorRestaurantTableMap-MsTable` FOREIGN KEY (`TableID`) REFERENCES `mstable` (`TableID`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

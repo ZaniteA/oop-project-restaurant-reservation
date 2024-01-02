@@ -25,16 +25,28 @@ public class Main {
             System.out.print(prompt);
 
             int ret = 0;
+            boolean error = false;
             try {
                 ret = user_input.nextInt();
             } catch (Exception e) {
                 System.out.println(error_message);
+                error = true;
             }
             user_input.nextLine();
+            if (error)
+                continue;
 
-            if (lo != null && hi != null) {
-                if (ret < lo || ret > hi) {
+            if (lo != null) {
+                if (ret < lo) {
                     System.out.println(error_message);
+                    continue;
+                }
+            }
+
+            if (hi != null) {
+                if (ret > hi) {
+                    System.out.println(error_message);
+                    continue;
                 }
             }
 
@@ -50,17 +62,29 @@ public class Main {
         while (true) {
             System.out.print(prompt);
 
-            double ret = 0;
+            double ret = 0.0;
+            boolean error = false;
             try {
                 ret = user_input.nextDouble();
             } catch (Exception e) {
                 System.out.println(error_message);
+                error = true;
             }
             user_input.nextLine();
+            if (error)
+                continue;
 
-            if (lo != null && hi != null) {
-                if (ret < lo || ret > hi) {
+            if (lo != null) {
+                if (ret < lo) {
                     System.out.println(error_message);
+                    continue;
+                }
+            }
+
+            if (hi != null) {
+                if (ret > hi) {
+                    System.out.println(error_message);
+                    continue;
                 }
             }
 
@@ -68,19 +92,30 @@ public class Main {
         }
     }
 
+    // Gets the ordinal suffix of a number.
+    private static String getOrdinalSuffix(int i) {
+        if (i == 1)
+            return "st";
+        if (i == 2)
+            return "nd";
+        if (i == 3)
+            return "rd";
+        return "th";
+    }
+
     // Section 1: Home menu
     private static void homeMenu() {
         System.out.printf("Hello %s, what would you like to do?\n", emp_acc.getName());
         System.out.println(" 1. View Order");
-        System.out.println(" 2. Add Reservasion");
+        System.out.println(" 2. Add Reservation");
         System.out.println(" 3. Add Menu to an Order");
         System.out.println(" 4. Finalize Order");
         System.out.println(" 5. View Menu");
         System.out.println(" 6. Insert Menu");
         System.out.println(" 7. Update Menu");
         System.out.println(" 8. Delete Menu");
-        System.out.println(" 9. Logout");
-        System.out.println("10. View Table");
+        System.out.println(" 9. View Table");
+        System.out.println("10. Logout");
         System.out.println(" 0. Exit");
 
         int resp = readInteger("> ", "Undefined menu section", 0, 10);
@@ -100,9 +135,10 @@ public class Main {
     private static void login() {
         System.out.println("Enter Employee ID:");
         int emp_id = readInteger("> ", "Invalid employee ID format", null, null);
-        
-        if(!emp_acc.login(emp_id)) {
-        	return;
+
+        if (!emp_acc.login(emp_id)) {
+            System.out.println("Login failed: invalid employee ID. Please try again");
+            return;
         }
 
         // Return to home menu
@@ -134,8 +170,8 @@ public class Main {
 
         ArrayList<Integer> table_id = new ArrayList<Integer>();
         for (int i = 1; i <= number_of_tables; i++) {
-            String prompt = String.format("Enter %d-th table ID: ", i);
-            table_id.add(readInteger(prompt, "Invalid table ID", null, null));
+            String prompt = String.format("Enter %d%s table ID: ", i, getOrdinalSuffix(i));
+            table_id.add(readInteger(prompt, "Invalid table ID", 1, null));
         }
 
         // Get number of persons
@@ -154,7 +190,7 @@ public class Main {
     private static void addOrder() {
         // Get order ID
         System.out.println("Enter order ID:");
-        int order_id = readInteger("> ", "Invalid order ID", null, null);
+        int order_id = readInteger("> ", "Invalid order ID", 1, null);
 
         // Get menu list
         System.out.println("How many menu items?");
@@ -162,8 +198,8 @@ public class Main {
 
         ArrayList<Integer> menu_id = new ArrayList<Integer>();
         for (int i = 1; i <= number_of_menu; i++) {
-            String prompt = String.format("Enter %d-th menu ID: ", i);
-            menu_id.add(readInteger(prompt, "Invalid menu ID", null, null));
+            String prompt = String.format("Enter %d%s menu ID: ", i, getOrdinalSuffix(i));
+            menu_id.add(readInteger(prompt, "Invalid menu ID", 1, null));
         }
 
         emp_acc.addMenuToOrder(order_id, menu_id);
@@ -178,7 +214,7 @@ public class Main {
     private static void finalizeOrder() {
         // Get order ID
         System.out.println("Enter order ID:");
-        int order_id = readInteger("> ", "Invalid order ID", null, null);
+        int order_id = readInteger("> ", "Invalid order ID", 1, null);
 
         emp_acc.finalizeOrder(order_id);
 
@@ -267,7 +303,7 @@ public class Main {
     private static void updateMenu() {
         // Get menu ID
         System.out.println("Enter menu ID:");
-        int menu_id = readInteger("> ", "Invalid menu ID", null, null);
+        int menu_id = readInteger("> ", "Invalid menu ID", 1, null);
 
         System.out.println("Which data would you like to update?");
         System.out.println("1. Name");
@@ -299,7 +335,7 @@ public class Main {
     private static void deleteMenu() {
         // Get Menu ID
         System.out.println("Enter menu ID:");
-        int menu_id = readInteger("> ", "Invalid menu ID", null, null);
+        int menu_id = readInteger("> ", "Invalid menu ID", 1, null);
 
         emp_acc.deleteMenu(menu_id);
 

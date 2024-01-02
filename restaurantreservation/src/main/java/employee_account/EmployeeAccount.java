@@ -17,33 +17,36 @@ public final class EmployeeAccount {
     // Implemented using the Singleton principle.
 
     // Singleton instance
-    private static EmployeeAccount instance;
+    private static final EmployeeAccount instance = new EmployeeAccount();
 
-    private static Integer id;
-    private static Integer restaurant_id;
-    private static Restaurant current_restaurant;
-    private static Connection sql_connection;
-    private static String name;
+    private Integer id;
+    private Integer restaurant_id;
+    private Restaurant current_restaurant;
+    private Connection sql_connection;
+    private String name;
 
     // Hide the constructor, as the class is a singleton
     private EmployeeAccount() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            sql_connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/restaurantreservation", "root",
-                    "");
-            if (sql_connection == null) {
+            this.sql_connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/restaurantreservation",
+                    "root", "");
+            if (this.sql_connection == null) {
                 throw new Exception("Failed to connect to MySQL server");
             }
         } catch (Exception e) {
+            System.out.println("Failed to connect to MySQL server");
+            System.out.println("The server needs to be hosted on `localhost:3306/restaurantreservation`");
+            System.out.println("");
+            System.out.println("Detailed information:");
             e.printStackTrace();
+
+            System.exit(1);
         }
     }
 
     // Method to get the single instance of EmployeeAccount
     public static EmployeeAccount getInstance() {
-        if (instance == null) {
-            instance = new EmployeeAccount();
-        }
         return instance;
     }
 
@@ -51,7 +54,7 @@ public final class EmployeeAccount {
 
     // Checks if the user is logged in.
     // If not, throws an error.
-    private static Boolean checkLoggedIn() {
+    private Boolean checkLoggedIn() {
         if (id == null) {
             try {
                 throw new Exception("User is not logged in");
@@ -64,7 +67,7 @@ public final class EmployeeAccount {
     }
 
     // Returns the restaurant instance from its ID.
-    private static void getRestaurantInstance() {
+    private void getRestaurantInstance() {
         try {
             // Get the restaurant type and create the appropriate subclass
             PreparedStatement restaurant_pst = sql_connection
@@ -74,10 +77,10 @@ public final class EmployeeAccount {
 
             while (restaurant_rs.next()) {
                 if (restaurant_rs.getInt("MainID") != 0) { // If not null
-                    MainRestaurant mr = new MainRestaurant(id, sql_connection);
+                    MainRestaurant mr = new MainRestaurant(restaurant_rs.getInt("MainID"), sql_connection);
                     current_restaurant = mr;
                 } else if (restaurant_rs.getInt("LocalID") != 0) { // If not null
-                    LocalRestaurant lr = new LocalRestaurant(id, sql_connection);
+                    LocalRestaurant lr = new LocalRestaurant(restaurant_rs.getInt("LocalID"), sql_connection);
                     current_restaurant = lr;
                 }
             }
@@ -241,13 +244,17 @@ public final class EmployeeAccount {
             return -1;
 
         Order current_order = new Order(customer_name, persons, table_id);
-        Integer new_order_id = current_restaurant.createOrder(current_order);
+        if (!current_order.verifyTables(sql_connection)) {
+            return -1;
+        }
+        current_order.id = current_restaurant.createOrder(current_order);
 
-        if (new_order_id != -1) {
+        if (current_order.id != -1) {
+            current_order.confirmTables(sql_connection);
             current_order.setTableStatus(true, sql_connection);
         }
 
-        return new_order_id;
+        return current_order.id;
     }
 
     // Adds a list of menu items to an order, and sets the status to `in order` (1).
@@ -258,24 +265,35 @@ public final class EmployeeAccount {
 
         // If the order ID is invalid (doesn't exist or not in the correct restaurant)
         if (!current_restaurant.orderInRestaurant(order_id)) {
-            try {
-                throw new Exception("Invalid order ID for the current restaurant");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            System.out.println("Invalid order ID for the current restaurant");
             return 0;
         }
 
         Order current_order = Order.createFromID(order_id, sql_connection);
-        current_order.setOrderStatus(1, sql_connection);
+
+        // If order has been finalized
+        if (current_order.status == 2) {
+            System.out.printf("Order with ID %d has already been finalized\n", order_id);
+            return 0;
+        }
 
         // Count successfully added menu items
         int success = 0;
         for (Integer m : menu_id) {
+            if (!current_restaurant.menuInRestaurant(m)) {
+                System.out.printf("Menu with ID %d does not exist in this restaurant\n", m);
+                continue;
+            }
             if (current_order.addMenu(m, sql_connection)) {
                 success++;
             }
         }
+
+        // If at least one menu item was added, change the status to `in order`
+        if (success > 0) {
+            current_order.setOrderStatus(1, sql_connection);
+        }
+
         return success;
     }
 
@@ -287,15 +305,19 @@ public final class EmployeeAccount {
 
         // If the order ID is invalid (doesn't exist or not in the correct restaurant)
         if (!current_restaurant.orderInRestaurant(order_id)) {
-            try {
-                throw new Exception("Invalid order ID for the current restaurant");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            System.out.println("Invalid order ID for the current restaurant");
             return;
         }
 
         Order current_order = Order.createFromID(order_id, sql_connection);
+        if (current_order.status == 0) {
+            System.out.println("No menu items ordered");
+            return;
+        } else if (current_order.status == 2) {
+            System.out.println("Order has already been finalized");
+            return;
+        }
+
         current_order.setOrderStatus(2, sql_connection);
         current_order.printBill(sql_connection);
         current_order.setTableStatus(false, sql_connection);

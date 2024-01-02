@@ -23,8 +23,8 @@ public class MainRestaurant extends Restaurant {
 		try {
 			// Filter the menu items into regular and special
 			PreparedStatement menu_pst = sql_connection
-					.prepareStatement("select MenuID, RegularID, SpecialID from MsMenu where RestaurantID = ?");
-			menu_pst.setInt(1, super.id);
+					.prepareStatement("select * from MsMenu where RestaurantID = ?");
+			menu_pst.setInt(1, this.id);
 			ResultSet menu_rs = menu_pst.executeQuery();
 
 			ArrayList<Integer> regular_id = new ArrayList<Integer>();
@@ -57,17 +57,18 @@ public class MainRestaurant extends Restaurant {
 
 			// Print special menu
 			System.out.println("Special Menu");
-			System.out.println("==============================================");
+			System.out.println("==================================================");
 			for (Integer i : special_id) {
 				SpecialMenu curr_menu = SpecialMenu.createFromID(i, sql_connection);
+				assert (curr_menu != null);
 				curr_menu.print();
-				System.out.println("==============================================");
+				System.out.println("==================================================");
 			}
 			System.out.println();
 
 		} catch (Exception e) {
 			System.out.println("PreparedStatement failure");
-			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 	}
 
@@ -104,7 +105,7 @@ public class MainRestaurant extends Restaurant {
 			PreparedStatement insert_menu = sql_connection.prepareStatement(
 					"insert into MsMenu (RegularID, SpecialID, LocalID, RestaurantID) values (NULL, ?, NULL, ?)");
 			insert_menu.setInt(1, special_id);
-			insert_menu.setInt(2, super.id);
+			insert_menu.setInt(2, this.id);
 
 			check = insert_menu.executeUpdate();
 			if (check == 0) {
