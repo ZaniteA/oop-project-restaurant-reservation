@@ -244,7 +244,7 @@ public final class EmployeeAccount {
             return -1;
 
         Order current_order = new Order(customer_name, persons, table_id);
-        if (!current_order.verifyTables(sql_connection)) {
+        if (!current_order.verifyTables(current_restaurant, sql_connection)) {
             return -1;
         }
         current_order.id = current_restaurant.createOrder(current_order);

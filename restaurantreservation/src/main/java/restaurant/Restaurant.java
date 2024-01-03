@@ -48,6 +48,30 @@ public abstract class Restaurant {
 
 		return false;
 	}
+	
+	public Boolean tableInRestaurant(int table_id) {
+		try {
+			PreparedStatement table_pst = sql_connection
+					.prepareStatement("select count(*) from RestaurantTableMap where RestaurantID = ? and TableID = ?");
+			table_pst.setInt(1, this.id);
+			table_pst.setInt(2, table_id);
+			ResultSet table_rs = table_pst.executeQuery();
+
+			// Check menu count
+			if (table_rs.next()) {
+				int cnt = table_rs.getInt(1);
+				if (cnt > 0) {
+					return true;
+				}
+			}
+
+		} catch (Exception e) {
+			System.out.println("PreparedStatement failure");
+			e.printStackTrace();
+		}
+
+		return false;
+	}
 
 	// Returns TRUE if the menu specified has been ordered before.
 	public Boolean menuOrdered(int menu_id) {

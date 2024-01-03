@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import restaurant.Restaurant;
+
 public class Order {
 
     // An order, which contains data about the customer, number of persons, tables,
@@ -96,7 +98,7 @@ public class Order {
 
     // Verifies if the tables selected for the order is valid and enough for the
     // number of persons.
-    public Boolean verifyTables(Connection sql_connection) {
+    public Boolean verifyTables(Restaurant current_restaurant, Connection sql_connection) {
         Integer total_cap = 0;
         for (Integer t : table_id) {
             try {
@@ -115,6 +117,9 @@ public class Order {
                 if (cap == 0) {
                     System.out.printf("Table with ID %d not found\n", t);
                     return false;
+                } else if (!current_restaurant.tableInRestaurant(t)) {
+                	System.out.printf("Table with ID %d is not located in your restaurant", t);
+                	return false;
                 } else if (taken) {
                     System.out.printf("Table with ID %d is already taken", t);
                     return false;
