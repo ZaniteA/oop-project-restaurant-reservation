@@ -35,7 +35,7 @@ public class LocalMenu extends Menu {
             Integer local_id = getLocalID(common_id, sql_connection);
 
             PreparedStatement loc_pst = sql_connection
-                    .prepareStatement("select * from MsSpecialMenu where LocalID = ?");
+                    .prepareStatement("select * from MsLocalMenu where LocalID = ?");
             loc_pst.setInt(1, local_id);
             ResultSet loc_rs = loc_pst.executeQuery();
 
