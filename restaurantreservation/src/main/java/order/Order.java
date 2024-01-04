@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import restaurant.Restaurant;
 
@@ -99,6 +101,13 @@ public class Order {
     // Verifies if the tables selected for the order is valid and enough for the
     // number of persons.
     public Boolean verifyTables(Restaurant current_restaurant, Connection sql_connection) {
+        // Check if all the tables are distinct
+        Set<Integer> unique_table_id = new HashSet<Integer>(table_id);
+        if (unique_table_id.size() != table_id.size()) {
+            System.out.println("Duplicate table IDs found");
+            return false;
+        }
+
         Integer total_cap = 0;
         for (Integer t : table_id) {
             try {
