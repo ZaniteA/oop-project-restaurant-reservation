@@ -77,10 +77,10 @@ public final class EmployeeAccount {
 
             while (restaurant_rs.next()) {
                 if (restaurant_rs.getInt("MainID") != 0) { // If not null
-                    MainRestaurant mr = new MainRestaurant(restaurant_rs.getInt("MainID"), sql_connection);
+                    MainRestaurant mr = new MainRestaurant(restaurant_id, sql_connection);
                     current_restaurant = mr;
                 } else if (restaurant_rs.getInt("LocalID") != 0) { // If not null
-                    LocalRestaurant lr = new LocalRestaurant(restaurant_rs.getInt("LocalID"), sql_connection);
+                    LocalRestaurant lr = new LocalRestaurant(restaurant_id, sql_connection);
                     current_restaurant = lr;
                 }
             }
