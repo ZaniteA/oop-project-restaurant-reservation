@@ -29,14 +29,14 @@ public final class EmployeeAccount {
     private EmployeeAccount() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            this.sql_connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/restaurantreservation",
+            this.sql_connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/restomanagement",
                     "root", "");
             if (this.sql_connection == null) {
                 throw new Exception("Failed to connect to MySQL server");
             }
         } catch (Exception e) {
             System.out.println("Failed to connect to MySQL server");
-            System.out.println("The server needs to be hosted on `localhost:3306/restaurantreservation`");
+            System.out.println("The server needs to be hosted on `localhost:3306/restomanagement`");
             System.out.println("");
             System.out.println("Detailed information:");
             e.printStackTrace();

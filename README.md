@@ -14,7 +14,7 @@ A GitHub repository containing the source files for the final project of the Obj
 
 **PICs:** Christoffer, Albert
 
-The database is located in `/restaurantreservation.sql`. An entity relationship diagram has been included in `/erd.png`.
+The database is located in `/RestoManagement.sql`. An entity relationship diagram has been included in `/erd.png`.
 
 The database needs to be imported into a local MySQL server under the name `restaurantreservation`, i.e. through the URL `localhost:3306/restaurantreservation` for the program to work correctly.
 
